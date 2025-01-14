@@ -1,0 +1,1 @@
+This is the initial commit for our Software engineering Project. Here will be working with the project entitled "Extract and Evaluate Embeddings from SDR."

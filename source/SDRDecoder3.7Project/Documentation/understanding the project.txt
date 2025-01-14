@@ -1,0 +1,19 @@
+According to our understanding of the problem, it revolves around illustrating semantic similarity using a SDR and demonstrating how different parts of a sequence relate semantically. If we break down the task, there will be three parts: learning large sequence, finding semantic similarity between or among the sequences and finally the goal is to show how similar subsequences are by using TrainEmbeddingModel, that compares similarity between SDRs.
+For the first part, which is learning large sequences,  sequence of tokens is generated where the tokens have semantic structure. Tokenization is the technique of breaking down a meaningful sequence (like a sentence or text) into smaller units (tokens) based on semantics rather than just syntax or word boundaries. For the second part, using scaler encoder the continuous or discrete numerical values (tokens) are converted into SDRs. The scalar encoder is specifically chosen because it aligns with the requirements of: Encoding numerical values into SDRs. preserving semantic and sequential relationships and supporting similarity measures crucial for comparing parts of sequences. For the last phase, Semantic Similarity Using SDRs: Measure similarity using techniques like Hamming Distance (count of differing bits) or cosine similarity.
+So, probable implementation Steps should be
+1.	Create a Semantically Rich Text:	
+ Write a meaningful paragraph. Example:
+"The large house with the text can be a part of the sequence if the text is clear."
+2.	Tokenize and Encode:
+	Tokenize the text into semantic units:
+["The large house", "with the text", "can be a", "part of the sequence", "if the text is clear"].
+	Map tokens to numerical values using a tokenizer (or assign manually).
+	Convert numerical tokens into SDRs using a scalar encoder.
+3.	Train the Model:
+	Feed the SDRs into a learning system (e.g., an SDR-based associative memory or neural network).
+	Allow the model to learn the semantic structure of the sequence.
+4.	Test Semantic Similarity:
+	Provide a query sequence (e.g., "can be a text").
+	Compare its SDR with other learned sequences (e.g., "can be a large", "can be a part").
+	Evaluate similarity using overlap measures.
+
