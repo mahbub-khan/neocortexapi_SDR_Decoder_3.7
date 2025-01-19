@@ -73,8 +73,11 @@ namespace NeoCortexApiSample
             //sequences.Add("S2", new List<double>(new double[] { 8.0, 1.0, 2.0, 9.0, 10.0, 7.0, 11.00 }));
 
 
-            sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 5.0, 2.0, 3.0, 7.0, 1.0, 9.0, 12.0, 11.0, 12.0, 13.0, 14.0, 11.0, 12.0 }));
-            sequences.Add("S2", new List<double>(new double[] { 0.8, 2.0, 0.0, 3.0, 3.0, 4.0, 5.0, 6.0, 5.0, 7.0, 2.0, 7.0, 1.0, 9.0, 11.0, 11.0, 10.0, 13.0, 14.0, 11.0, 7.0 }));
+            //sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 5.0, 2.0, 3.0, 7.0, 1.0, 9.0, 12.0, 11.0, 12.0, 13.0, 14.0, 11.0, 12.0 }));
+            //sequences.Add("S2", new List<double>(new double[] { 0.8, 2.0, 0.0, 3.0, 3.0, 4.0, 5.0, 6.0, 5.0, 7.0, 2.0, 7.0, 1.0, 9.0, 11.0, 11.0, 10.0, 13.0, 14.0, 11.0, 7.0 }));
+
+            sequences.Add("S1", new List<double>(new double[] { 0.0, 11.0, 12.0, 13.0, 14.0, 15.0, 5.0, 16.0, 17.0, 1.0, 2.0, 3.0, 6.0 }));
+            sequences.Add("S2", new List<double>(new double[] { 8.0, 12.0, 1.0, 2.0, 9.0, 10.0, 17.0, 11.00, 3.0, 13.0, 5.0, 6.0, 18.0 }));
 
             //            string poem = @"First Citizen:
             //Before we proceed any further, hear me speak.
@@ -102,9 +105,13 @@ namespace NeoCortexApiSample
             //var list2 = new double[] { 2.0, 3.0, 4.0 };
             //var list3 = new double[] { 8.0, 1.0, 2.0 };
 
-            var list1 = new double[] { 4.0, 5.0, 6.0, 5.0, 2.0, 3.0, 7.0, 1.0, 9.0, 12.0 };
-            var list2 = new double[] { 2.0, 3.0, 7.0, 1.0, 9.0, 12.0 };
-            var list3 = new double[] { 3.0, 7.0, 1.0 };
+            //var list1 = new double[] { 4.0, 5.0, 6.0, 5.0, 2.0, 3.0, 7.0, 1.0, 9.0, 12.0 };
+            //var list2 = new double[] { 2.0, 3.0, 7.0, 1.0, 9.0, 12.0 };
+            //var list3 = new double[] { 3.0, 7.0, 1.0 };
+            
+            var list1 = new double[] { 1.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 1.0, 2.0, 3.0 };
+            var list2 = new double[] { 12.0, 13.0, 17.0, 1.0, 9.0, 2.0 };
+            var list3 = new double[] { 13.0, 17.0, 11.0 };
 
             predictor.Reset();
             PredictNextElement(predictor, list1);
