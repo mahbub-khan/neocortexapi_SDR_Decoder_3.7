@@ -14,7 +14,7 @@ namespace WordEncoder
 
             foreach (char c in input)
             {
-                encodedString.Append(((int)c).ToString() + " ");
+                encodedString.Append(((float)c).ToString("F1") + ",");
             }
 
             Console.WriteLine("Encoded String: " + encodedString.ToString().Trim());
