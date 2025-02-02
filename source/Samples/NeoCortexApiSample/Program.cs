@@ -66,14 +66,14 @@ namespace NeoCortexApiSample
         {
             Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
 
-            sequences.Add("S1", new List<double>(new double[] { 1.0, 2.0, 3.0, 4.0 }));
-            sequences.Add("S2", new List<double>(new double[] { 5.0, 6.0, 7.0, 8.0 }));
+            //sequences.Add("S1", new List<double>(new double[] { 1.0, 2.0, 3.0, 4.0 }));
+            //sequences.Add("S2", new List<double>(new double[] { 5.0, 6.0, 7.0, 8.0 }));
 
             //sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 5.0, 4.0, 3.0, 7.0, 1.0, 9.0, 12.0, 11.0, 12.0, 13.0, 14.0, 11.0, 12.0, 14.0, 5.0, 7.0, 6.0, 9.0, 3.0, 4.0, 3.0, 4.0, 3.0, 4.0 }));
             //sequences.Add("S2", new List<double>(new double[] { 0.8, 2.0, 0.0, 3.0, 3.0, 4.0, 5.0, 6.0, 5.0, 7.0, 2.0, 7.0, 1.0, 9.0, 11.0, 11.0, 10.0, 13.0, 14.0, 11.0, 7.0, 6.0, 5.0, 7.0, 6.0, 5.0, 3.0, 2.0, 3.0, 4.0, 3.0, 4.0 }));
 
-            //sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 2.0, 3.0, 4.0, 2.0, 5.0, }));
-            //sequences.Add("S2", new List<double>(new double[] { 8.0, 1.0, 2.0, 9.0, 10.0, 7.0, 11.00 }));
+            sequences.Add("S1", new List<double>(new double[] { 1045.0, 2572.0, 1037.0, 2388.0, 2021.0, 1045.0, 2572.0 }));
+            sequences.Add("S2", new List<double>(new double[] { 2036.0, 1037.0, 2684.0, 1998.0, 1037.0, 2905.0 }));
 
 
             //sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 5.0, 2.0, 3.0, 7.0, 1.0, 9.0, 12.0, 11.0, 12.0, 13.0, 14.0, 11.0, 12.0 }));
@@ -104,9 +104,9 @@ namespace NeoCortexApiSample
             // These list are used to see how the prediction works.
             // Predictor is traversing the list element by element. 
             // By providing more elements to the prediction, the predictor delivers more precise result.
-            var list1 = new double[] { 11.0, 12.0, 13.0 };
-            var list2 = new double[] { 15.0, 16.0, 17.0 };
-            var list3 = new double[] { 8.0, 9.0, 10.0 };
+            var list1 = new double[] { 1045.0, 2572.0, 1037.0, 2388.0 };
+            var list2 = new double[] { 2021.0, 1045.0, 2572.0 };
+            var list3 = new double[] { 684.0, 1998.0, 1037.0 };
 
             //var list1 = new double[] { 1.0, 2.0, 3.0, 4.0, 2.0, 5.0 };
             //var list2 = new double[] { 2.0, 3.0, 4.0 };
