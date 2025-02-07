@@ -55,8 +55,8 @@ namespace NeoCortexApiSample
                 PredictedSegmentDecrement = 0.1
             };
 
-            //double max = 255;
-            double max = 30000;
+            double max = 1303;
+            //double max = 30000;
 
             Dictionary<string, object> settings = new Dictionary<string, object>()
             {

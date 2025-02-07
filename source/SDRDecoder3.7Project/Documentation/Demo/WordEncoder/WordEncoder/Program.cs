@@ -14,13 +14,26 @@ class Program
         string[] words = input.Split(new char[] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
         Console.WriteLine("Number of words: " + words.Length);
 
+        float maxAsciiSum = 0;
+        string maxWord = string.Empty; // To store the word with the max ASCII sum
+
         foreach (string word in words)
         {
             int asciiSum = word.Sum(c => (int)c);
-            encodedString.Append(asciiSum.ToString() + " ");
-            Console.WriteLine($"Word: {word}\t Length: {word.Length}\t ASCII Sum: {asciiSum}");
+            float reducedAsciiSum = asciiSum / 10f;
+            encodedString.Append(reducedAsciiSum.ToString() + " ");
+            Console.WriteLine($"Word: {word}\t Length: {word.Length}\t Encoded Value(ASCII Sum): {reducedAsciiSum}");
+
+            // Check if the current ASCII sum is greater than the max found so far
+            if (reducedAsciiSum > maxAsciiSum)
+            {
+                maxAsciiSum = reducedAsciiSum;
+                maxWord = word; // Store the corresponding word
+            }
+
         }
 
-        Console.WriteLine("Encoded Sentence: " + encodedString.ToString().Trim());
+        Console.WriteLine("Encoded Sentence: " + encodedString.ToString().Trim()); 
+        Console.WriteLine($"Maximum ASCII Sum: {maxAsciiSum} for (Word: {maxWord})");
     }
 }

@@ -36,18 +36,19 @@ namespace NeoCortexApiSample
             //GridCellSamples gridCells = new GridCellSamples();
             //gridCells.Run();
 
-            // RunMultiSimpleSequenceLearningExperiment();
+            RunMultiSimpleSequenceLearningExperiment();
 
 
-            RunMultiSequenceLearningExperiment();
+            //RunMultiSequenceLearningExperiment();
         }
 
         private static void RunMultiSimpleSequenceLearningExperiment()
         {
             Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
+            sequences.Add("S1", new List<double>(new double[] { 924.0, 220.0, 649.0, 990.0, 307.0, 220.0, 461.0, 211.0, 866.0, 788.0, 517.0, 1302.0 }));
 
-            sequences.Add("S1", new List<double>(new double[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, }));
-            sequences.Add("S2", new List<double>(new double[] { 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0 }));
+            //sequences.Add("S1", new List<double>(new double[] { 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, }));
+            //sequences.Add("S2", new List<double>(new double[] { 10.0, 11.0, 12.0, 13.0, 14.0, 15.0, 16.0 }));
 
             //
             // Prototype for building the prediction engine.
