@@ -37,3 +37,13 @@ class Program
         Console.WriteLine($"Maximum ASCII Sum: {maxAsciiSum} for (Word: {maxWord})");
     }
 }
+
+//Demo Output:
+/*
+Enter a sentence: top, pot
+Number of words: 2
+Word: top        Length: 3       Encoded Value(ASCII Sum): 33.9
+Word: pot        Length: 3       Encoded Value(ASCII Sum): 33.9
+Encoded Sentence: 33.9 33.9
+Maximum ASCII Sum: 33.9 for (Word: top)
+*/
