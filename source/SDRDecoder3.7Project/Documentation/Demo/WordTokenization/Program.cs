@@ -13,7 +13,7 @@ class Program
 {
     static void Main()
     {
-        string textInput = "Hello world! This is an SDR test.";  // Example input
+        string textInput = "input.txt";  // Example input
         List<int> tokenIds = TokenizeText(textInput);
 
         // ScalarEncoder initialization
@@ -53,9 +53,9 @@ class Program
         process.WaitForExit();
 
         // Display results
-        Console.WriteLine("Input Text: " + inputText);
-        Console.WriteLine("Tokens: " + tokens);
-        Console.WriteLine("Token IDs: " + tokenIds);
+       // Console.WriteLine("Input Text: " + inputText);
+       // Console.WriteLine("Tokens: " + tokens);
+        //Console.WriteLine("Token IDs: " + tokenIds);
 
         // Convert tokenized string output into List<int>
         return output.Split(' ').Select(int.Parse).ToList();
