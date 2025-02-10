@@ -45,8 +45,17 @@ class Program
 
         Process process = new Process { StartInfo = psi };
         process.Start();
+
+        string tokens = process.StandardOutput.ReadLine();
+        string tokenIds = process.StandardOutput.ReadLine();
+
         string output = process.StandardOutput.ReadToEnd().Trim();
         process.WaitForExit();
+
+        // Display results
+        Console.WriteLine("Input Text: " + inputText);
+        Console.WriteLine("Tokens: " + tokens);
+        Console.WriteLine("Token IDs: " + tokenIds);
 
         // Convert tokenized string output into List<int>
         return output.Split(' ').Select(int.Parse).ToList();
