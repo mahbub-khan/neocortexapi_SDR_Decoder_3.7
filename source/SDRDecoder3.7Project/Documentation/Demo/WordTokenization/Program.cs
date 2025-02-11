@@ -52,10 +52,31 @@ class Program
         string output = process.StandardOutput.ReadToEnd().Trim();
         process.WaitForExit();
 
+        if (string.IsNullOrWhiteSpace(output))
+        {
+            Console.WriteLine("Warning: Tokenizer returned empty output.");
+            return new List<int>();  // Return empty list instead of causing an error
+        }
+
+        // Ensure all parts are valid integers
+        try
+        {
+            return output.Split(' ')
+                         .Where(token => !string.IsNullOrWhiteSpace(token)) // Ignore empty tokens
+                         .Select(int.Parse)
+                         .ToList();
+        }
+        catch (FormatException ex)
+        {
+            Console.WriteLine($"Error: Tokenizer output contains invalid values. {ex.Message}");
+            return new List<int>();  // Return an empty list to prevent crashes
+        }
+
         // Display results
-       // Console.WriteLine("Input Text: " + inputText);
+        Console.WriteLine("Input Text: " + inputText);
        // Console.WriteLine("Tokens: " + tokens);
         //Console.WriteLine("Token IDs: " + tokenIds);
+        Console.WriteLine("Output:" +output);
 
         // Convert tokenized string output into List<int>
         return output.Split(' ').Select(int.Parse).ToList();
