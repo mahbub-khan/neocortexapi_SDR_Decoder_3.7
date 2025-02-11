@@ -13,7 +13,7 @@ class Program
 {
     static void Main()
     {
-        string textInput = "input.txt";  // Example input
+        string textInput = "Hello everyone";  // Example input
         List<int> tokenIds = TokenizeText(textInput);
 
         // ScalarEncoder initialization
@@ -74,9 +74,9 @@ class Program
 
         // Display results
         Console.WriteLine("Input Text: " + inputText);
-       // Console.WriteLine("Tokens: " + tokens);
-        //Console.WriteLine("Token IDs: " + tokenIds);
-        Console.WriteLine("Output:" +output);
+        Console.WriteLine("Tokens: " + tokens);
+        Console.WriteLine("Token IDs: " + tokenIds);
+        //Console.WriteLine("Output:" +output);
 
         // Convert tokenized string output into List<int>
         return output.Split(' ').Select(int.Parse).ToList();
