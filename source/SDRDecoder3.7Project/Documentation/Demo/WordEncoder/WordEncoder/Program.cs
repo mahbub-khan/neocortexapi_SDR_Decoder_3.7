@@ -11,39 +11,24 @@ class Program
         StringBuilder encodedString = new StringBuilder();
 
         //ignoring spaces, commas and full-stops for encoding
-        string[] words = input.Split(new char[] { ' ', ',', '.' }, StringSplitOptions.RemoveEmptyEntries);
-        Console.WriteLine("Number of words: " + words.Length);
+        string[] words = input.Split(new char[] { ' ', ',', '.', '?' }, StringSplitOptions.RemoveEmptyEntries);
+        Console.WriteLine("Number of total words: " + words.Length);
 
-        float maxAsciiSum = 0;
-        string maxWord = string.Empty; // To store the word with the max ASCII sum
+        //finding out unique words
+        List<string> uniqueWords = words.Distinct().ToList();
+        Console.WriteLine("Number of unique words: " + uniqueWords.Count);
 
-        foreach (string word in words)
+        int uniqueWordCount = 0;
+
+
+        foreach (string uniqueWord in uniqueWords)
         {
-            int asciiSum = word.Sum(c => (int)c);
-            float reducedAsciiSum = asciiSum / 10f;
-            encodedString.Append(reducedAsciiSum.ToString() + " ");
-            Console.WriteLine($"Word: {word}\t Length: {word.Length}\t Encoded Value(ASCII Sum): {reducedAsciiSum}");
-
-            // Check if the current ASCII sum is greater than the max found so far
-            if (reducedAsciiSum > maxAsciiSum)
-            {
-                maxAsciiSum = reducedAsciiSum;
-                maxWord = word; // Store the corresponding word
-            }
-
+           uniqueWordCount++;
+           Console.WriteLine($" #{uniqueWordCount}: {uniqueWord}");
         }
 
-        Console.WriteLine("Encoded Sentence: " + encodedString.ToString().Trim());
-        Console.WriteLine($"Maximum ASCII Sum: {maxAsciiSum} for (Word: {maxWord})");
+        //New Encoding technique will be implemented here
+
+        
     }
 }
-
-//Demo Output:
-/*
-Enter a sentence: top, pot
-Number of words: 2
-Word: top        Length: 3       Encoded Value(ASCII Sum): 33.9
-Word: pot        Length: 3       Encoded Value(ASCII Sum): 33.9
-Encoded Sentence: 33.9 33.9
-Maximum ASCII Sum: 33.9 for (Word: top)
-*/
