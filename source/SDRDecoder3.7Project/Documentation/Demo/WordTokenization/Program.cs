@@ -13,8 +13,18 @@ class Program
 {
     static void Main()
     {
-        string textInput = "Hello everyone";  // Example input
-        List<int> tokenIds = TokenizeText(textInput);
+        string textInput = "input.txt";  // Example input
+        if (!File.Exists(textInput))
+        {
+            Console.WriteLine("File not found!");
+            return;
+        }
+
+        // Read the text file
+        string text = File.ReadAllText(textInput);
+        List<int> tokenIds = TokenizeText(text);
+
+        Console.WriteLine(string.Join(" ",tokenIds));
 
         // ScalarEncoder initialization
         ScalarEncoder encoder = new ScalarEncoder(0, 30522, 21, false);  // minVal, maxVal, w
@@ -22,70 +32,70 @@ class Program
         Console.WriteLine("Encoding Token IDs into SDRs...");
         foreach (int tokenId in tokenIds)
         {
-            // Encode Token ID into SDR
+            //Encode Token ID into SDR
             int[] encodedArray = encoder.Encode(tokenId);
 
-            // Convert int[] to BitArray
+            //Convert int[] to BitArray
             BitArray sdr = new BitArray(encodedArray.Select(x => x == 1).ToArray());
 
             Console.WriteLine($"Token ID: {tokenId} -> SDR: {BitArrayToBinaryString(sdr)}");
         }
-    }
 
-    static List<int> TokenizeText(string inputText)
-    {
-        ProcessStartInfo psi = new ProcessStartInfo
+
+        static List<int> TokenizeText(string inputText)
         {
-            FileName = "python",
-            Arguments = $"tokenizer.py \"{inputText}\"",
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
+            ProcessStartInfo psi = new ProcessStartInfo
+            {
+                FileName = "python",
+                Arguments = $"tokenizer.py \"{inputText}\"",
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
 
-        Process process = new Process { StartInfo = psi };
-        process.Start();
+            Process process = new Process { StartInfo = psi };
+            process.Start();
 
-        string tokens = process.StandardOutput.ReadLine();
-        string tokenIds = process.StandardOutput.ReadLine();
+            string tokens = process.StandardOutput.ReadLine();
+            string tokenIds = process.StandardOutput.ReadLine();
 
-        string output = process.StandardOutput.ReadToEnd().Trim();
-        process.WaitForExit();
+            string output = process.StandardOutput.ReadToEnd().Trim();
+            process.WaitForExit();
 
-        if (string.IsNullOrWhiteSpace(output))
-        {
-            Console.WriteLine("Warning: Tokenizer returned empty output.");
-            return new List<int>();  // Return empty list instead of causing an error
+
+            // Display results
+            Console.WriteLine("Input Text: " + inputText);
+            Console.WriteLine("Tokens: " + tokens);
+            Console.WriteLine("Token IDs: " + tokenIds);
+            //Console.WriteLine("Output:" +output);
+
+            // Convert tokenized string output into List<int>
+
+            if (string.IsNullOrWhiteSpace(tokenIds))
+            {
+                Console.WriteLine("Warning: Tokenizer returned empty output.");
+                return new List<int>();  // Return empty list instead of causing an error
+            }
+
+            // Ensure all parts are valid integers
+            try
+            {
+                return tokenIds.Split(' ')
+                             .Where(token => !string.IsNullOrWhiteSpace(token)) // Ignore empty tokens
+                             .Select(int.Parse)
+                             .ToList();
+            }
+            catch (FormatException ex)
+            {
+                Console.WriteLine($"Error: Tokenizer output contains invalid values. {ex.Message}");
+                return new List<int>();  // Return an empty list to prevent crashes
+            }
         }
 
-        // Ensure all parts are valid integers
-        try
+        static string BitArrayToBinaryString(BitArray bitArray)
         {
-            return output.Split(' ')
-                         .Where(token => !string.IsNullOrWhiteSpace(token)) // Ignore empty tokens
-                         .Select(int.Parse)
-                         .ToList();
+            return string.Join("", bitArray.Cast<bool>().Select(bit => bit ? "1" : "0"));
         }
-        catch (FormatException ex)
-        {
-            Console.WriteLine($"Error: Tokenizer output contains invalid values. {ex.Message}");
-            return new List<int>();  // Return an empty list to prevent crashes
-        }
-
-        // Display results
-        Console.WriteLine("Input Text: " + inputText);
-        Console.WriteLine("Tokens: " + tokens);
-        Console.WriteLine("Token IDs: " + tokenIds);
-        //Console.WriteLine("Output:" +output);
-
-        // Convert tokenized string output into List<int>
-        return output.Split(' ').Select(int.Parse).ToList();
-    }
-
-    static string BitArrayToBinaryString(BitArray bitArray)
-    {
-        return string.Join("", bitArray.Cast<bool>().Select(bit => bit ? "1" : "0"));
     }
 }
-
 
