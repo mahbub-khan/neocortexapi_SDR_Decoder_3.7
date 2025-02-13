@@ -15,7 +15,7 @@ class Program
         Console.WriteLine("Number of total words: " + words.Length);
 
         //finding out unique words
-        List<string> uniqueWords = words.Distinct().ToList();
+        List<string> uniqueWords = words.Select(w => w.ToLower()).Distinct().ToList();
         Console.WriteLine("Number of unique words: " + uniqueWords.Count);
 
         int uniqueWordCount = 0;
@@ -32,3 +32,21 @@ class Program
         
     }
 }
+
+/*
+Current Ouput:
+Enter a sentence: You? you. YOU
+Number of total words: 3
+Number of unique words: 1
+ #1: you
+*/
+
+/*
+Previous Output:
+Enter a sentence: You, you, YOU.
+Number of total words: 3
+Number of unique words: 3
+ #1: You
+ #2: you
+ #3: YOU
+*/
