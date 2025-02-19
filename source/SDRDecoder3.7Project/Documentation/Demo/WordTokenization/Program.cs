@@ -24,22 +24,28 @@ class Program
         string text = File.ReadAllText(textInput);
         List<int> tokenIds = TokenizeText(text);
 
+        Dictionary<string, List<int>> sequences = new Dictionary<string, List<int>>();
+
         Console.WriteLine(string.Join(" ",tokenIds));
+        sequences.Add("S1", tokenIds);
+
+        // Print the values
+        Console.WriteLine("Key: S2, Values: " + string.Join(", ", sequences["S1"]));
 
         // ScalarEncoder initialization
-        ScalarEncoder encoder = new ScalarEncoder(0, 30522, 21, false);  // minVal, maxVal, w
+        //ScalarEncoder encoder = new ScalarEncoder(0, 30522, 21, false);  // minVal, maxVal, w
 
-        Console.WriteLine("Encoding Token IDs into SDRs...");
-        foreach (int tokenId in tokenIds)
-        {
-            //Encode Token ID into SDR
-            int[] encodedArray = encoder.Encode(tokenId);
+        // Console.WriteLine("Encoding Token IDs into SDRs...");
+        //foreach (int tokenId in tokenIds)
+        //{
+        //    //Encode Token ID into SDR
+        //    int[] encodedArray = encoder.Encode(tokenId);
 
-            //Convert int[] to BitArray
-            BitArray sdr = new BitArray(encodedArray.Select(x => x == 1).ToArray());
+        //    //Convert int[] to BitArray
+        //    BitArray sdr = new BitArray(encodedArray.Select(x => x == 1).ToArray());
 
-            Console.WriteLine($"Token ID: {tokenId} -> SDR: {BitArrayToBinaryString(sdr)}");
-        }
+        //    Console.WriteLine($"Token ID: {tokenId} -> SDR: {BitArrayToBinaryString(sdr)}");
+        //}
 
 
         static List<int> TokenizeText(string inputText)
@@ -92,10 +98,10 @@ class Program
             }
         }
 
-        static string BitArrayToBinaryString(BitArray bitArray)
-        {
-            return string.Join("", bitArray.Cast<bool>().Select(bit => bit ? "1" : "0"));
-        }
+        //static string BitArrayToBinaryString(BitArray bitArray)
+        //{
+        //    return string.Join("", bitArray.Cast<bool>().Select(bit => bit ? "1" : "0"));
+        //}
     }
 }
 
