@@ -24,10 +24,14 @@ class Program
         string text = File.ReadAllText(textInput);
         List<int> tokenIds = TokenizeText(text);
 
-        Dictionary<string, List<int>> sequences = new Dictionary<string, List<int>>();
+        // Convert to a list of doubles
+        List<double> doubleList = tokenIds.Select(i => (double)i).ToList();
 
-        Console.WriteLine(string.Join(" ",tokenIds));
-        sequences.Add("S1", tokenIds);
+
+        Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
+
+        Console.WriteLine(string.Join(" ",doubleList));
+        sequences.Add("S1", doubleList);
 
         // Print the values
         Console.WriteLine("Key: S2, Values: " + string.Join(", ", sequences["S1"]));
