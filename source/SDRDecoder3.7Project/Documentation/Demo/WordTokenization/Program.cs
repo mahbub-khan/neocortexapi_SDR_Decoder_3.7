@@ -36,21 +36,15 @@ class Program
         // Print the values
         Console.WriteLine("Key: S2, Values: " + string.Join(", ", sequences["S1"]));
 
-        // ScalarEncoder initialization
-        //ScalarEncoder encoder = new ScalarEncoder(0, 30522, 21, false);  // minVal, maxVal, w
+        // Prompt the user for input
+        Console.WriteLine("Enter some text: ");
+        string userInput = Console.ReadLine(); // Take runtime input from the user
 
-        // Console.WriteLine("Encoding Token IDs into SDRs...");
-        //foreach (int tokenId in tokenIds)
-        //{
-        //    //Encode Token ID into SDR
-        //    int[] encodedArray = encoder.Encode(tokenId);
+        // Pass the input to a method for processing
+        List<int> processedText = TokenizeText(userInput);
 
-        //    //Convert int[] to BitArray
-        //    BitArray sdr = new BitArray(encodedArray.Select(x => x == 1).ToArray());
-
-        //    Console.WriteLine($"Token ID: {tokenId} -> SDR: {BitArrayToBinaryString(sdr)}");
-        //}
-
+        // Display the processed text
+        Console.WriteLine("Processed Text: " + processedText);
 
         static List<int> TokenizeText(string inputText)
         {
@@ -101,11 +95,6 @@ class Program
                 return new List<int>();  // Return an empty list to prevent crashes
             }
         }
-
-        //static string BitArrayToBinaryString(BitArray bitArray)
-        //{
-        //    return string.Join("", bitArray.Cast<bool>().Select(bit => bit ? "1" : "0"));
-        //}
     }
 }
 
