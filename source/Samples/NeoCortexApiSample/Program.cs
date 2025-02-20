@@ -104,10 +104,19 @@ namespace NeoCortexApiSample
             //
             // These list are used to see how the prediction works.
             // Predictor is traversing the list element by element. 
-            // By providing more elements to the prediction, the predictor delivers more precise result.
-            var list1 = new double[] { 1045.0, 2572.0, 1037.0, 2388.0 };
-            //var list2 = new double[] { 2021.0, 1045.0, 2572.0 };
-            //var list3 = new double[] { 1684.0, 1098.0, 2037.0 };
+            // By providing more elements to the prediction, the predictor delivers more precise result
+
+            // Prompt the user to enter a list of numbers
+            Console.WriteLine("Enter a list of numbers separated by spaces:");
+
+            // Read the input
+            string input = Console.ReadLine();
+
+            List<double> list = input.Split(' ')   // Split by space
+                                       .Select(double.Parse) // Convert each to double
+                                       .ToList();  // Convert to List<double>
+                                                   // Convert the List<double> to a double[]
+            double[] list1 = list.ToArray();
 
             //var list1 = new double[] { 1.0, 2.0, 3.0, 4.0, 2.0, 5.0 };
             //var list2 = new double[] { 2.0, 3.0, 4.0 };
@@ -116,7 +125,7 @@ namespace NeoCortexApiSample
             //var list1 = new double[] { 4.0, 5.0, 6.0, 5.0, 2.0, 3.0, 7.0, 1.0, 9.0, 12.0 };
             //var list2 = new double[] { 2.0, 3.0, 7.0, 1.0, 9.0, 12.0 };
             //var list3 = new double[] { 3.0, 7.0, 1.0 };
-            
+
             // var list1 = new double[] { 1.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 1.0, 2.0, 3.0 };
             // var list2 = new double[] { 12.0, 13.0, 17.0, 1.0, 9.0, 2.0 };
             // var list3 = new double[] { 13.0, 17.0, 11.0 };
