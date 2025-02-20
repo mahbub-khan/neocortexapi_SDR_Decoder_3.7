@@ -34,7 +34,7 @@ class Program
         sequences.Add("S1", doubleList);
 
         // Print the values
-        Console.WriteLine("Key: S2, Values: " + string.Join(", ", sequences["S1"]));
+        Console.WriteLine("Key: S1, Values: " + string.Join(", ", sequences["S1"]));
 
         // Prompt the user for input
         Console.WriteLine("Enter some text: ");
@@ -43,8 +43,8 @@ class Program
         // Pass the input to a method for processing
         List<int> processedText = TokenizeText(userInput);
 
-        // Display the processed text
-        Console.WriteLine("Processed Text: " + processedText);
+        // Convert to a list of doubles
+        var list1 = processedText.Select(i => (double)i).ToList();
 
         static List<int> TokenizeText(string inputText)
         {
