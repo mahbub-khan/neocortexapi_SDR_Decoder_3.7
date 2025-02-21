@@ -112,11 +112,17 @@ namespace NeoCortexApiSample
             // Read the input
             string input = Console.ReadLine();
 
-            List<double> list = input.Split(' ')   // Split by space
-                                       .Select(double.Parse) // Convert each to double
-                                       .ToList();  // Convert to List<double>
-                                                   // Convert the List<double> to a double[]
-            double[] list1 = list.ToArray();
+            // Convert input string to an array of doubles
+            double[] list1 = input.Split(' ')
+                                  .Select(double.Parse)
+                                  .ToArray();
+
+            // Print the array to verify
+            Console.WriteLine("You entered:");
+            foreach (double num in list1)
+            {
+                Console.Write(num + " ");
+            }
 
             //var list1 = new double[] { 1.0, 2.0, 3.0, 4.0, 2.0, 5.0 };
             //var list2 = new double[] { 2.0, 3.0, 4.0 };
