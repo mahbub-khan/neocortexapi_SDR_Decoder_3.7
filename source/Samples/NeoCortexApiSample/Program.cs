@@ -21,31 +21,7 @@ namespace NeoCortexApiSample
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            string textInput = "input.txt";  // Example input
-            if (!File.Exists(textInput))
-            {
-                Console.WriteLine("File not found!");
-                return;
-            }
-
-            // Read the text file
-            string text = File.ReadAllText(textInput);
-            List_Generation list_Generation = new List_Generation();
-
-            // tokenId generation
-            List<int> tokenIds = list_Generation.TokenizeText(text);
-
-            // Convert to a list of doubles
-            List<double> doubleList = tokenIds.Select(i => (double)i).ToList();
-
-            // Store in a dictionary with a key like "S1"
-            Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
-            sequences.Add("S1", new List<double>(doubleList));
-
-            // Print to verify
-            Console.WriteLine("Generated Sequence:");
-            Console.WriteLine($"sequences.Add(\"S1\", new List<double>(new double[] {{ {string.Join(", ", doubleList)} }}));");
-
+            
            
             //
             // Starts experiment that demonstrates how to learn spatial patterns.
@@ -94,7 +70,32 @@ namespace NeoCortexApiSample
         /// </summary>
         private static void RunMultiSequenceLearningExperiment()
         {
+            string textInput = "input.txt";  // Example input
+            if (!File.Exists(textInput))
+            {
+                Console.WriteLine("File not found!");
+                return;
+            }
+
+            // Read the text file
+            string text = File.ReadAllText(textInput);
+            List_Generation list_Generation = new List_Generation();
+
+            // tokenId generation
+            List<int> tokenIds = list_Generation.TokenizeText(text);
+
+            // Convert to a list of doubles
+            List<double> doubleList = tokenIds.Select(i => (double)i).ToList();
+
+            // Store in a dictionary with a key like "S1"
             Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
+            sequences.Add("S1", new List<double>(doubleList));
+
+            // Print to verify
+            Console.WriteLine("Generated Sequence:");
+            Console.WriteLine($"sequences.Add(\"S1\", new List<double>(new double[] {{ {string.Join(", ", doubleList)} }}));");
+
+            
 
             //sequences.Add("S1", new List<double>(new double[] { 1.0, 2.0, 3.0, 4.0 }));
             //sequences.Add("S2", new List<double>(new double[] { 5.0, 6.0, 7.0, 8.0 }));
@@ -102,7 +103,7 @@ namespace NeoCortexApiSample
             //sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 5.0, 4.0, 3.0, 7.0, 1.0, 9.0, 12.0, 11.0, 12.0, 13.0, 14.0, 11.0, 12.0, 14.0, 5.0, 7.0, 6.0, 9.0, 3.0, 4.0, 3.0, 4.0, 3.0, 4.0 }));
             //sequences.Add("S2", new List<double>(new double[] { 0.8, 2.0, 0.0, 3.0, 3.0, 4.0, 5.0, 6.0, 5.0, 7.0, 2.0, 7.0, 1.0, 9.0, 11.0, 11.0, 10.0, 13.0, 14.0, 11.0, 7.0, 6.0, 5.0, 7.0, 6.0, 5.0, 3.0, 2.0, 3.0, 4.0, 3.0, 4.0 }));
 
-            sequences.Add("S1", new List<double>(new double[] { 1045.0, 2572.0, 1037.0, 2388.0, 2021.0, 1045.0, 2572.0, 2036.0, 1037.0, 2684.0, 1998.0, 1037.0, 2905.0 }));
+            //sequences.Add("S1", new List<double>(new double[] { 1045.0, 2572.0, 1037.0, 2388.0, 2021.0, 1045.0, 2572.0, 2036.0, 1037.0, 2684.0, 1998.0, 1037.0, 2905.0 }));
             //sequences.Add("S2", new List<double>(new double[] { 2036.0, 1037.0, 2684.0, 1998.0, 1037.0, 2905.0 }));
 
 
