@@ -22,21 +22,22 @@ class Program
 
         // Read the text file
         string text = File.ReadAllText(textInput);
-
         List_Generation list_Generation = new List_Generation();
+
+        // tokenId generation
         List<int> tokenIds = list_Generation.TokenizeText(text);
 
         // Convert to a list of doubles
         List<double> doubleList = tokenIds.Select(i => (double)i).ToList();
 
-
+        // Store in a dictionary with a key like "S1"
         Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
+        sequences.Add("S1", new List<double>(doubleList));
 
-        Console.WriteLine(string.Join(" ",doubleList));
-        sequences.Add("S1", doubleList);
+        // Print to verify
+        Console.WriteLine("Generated Sequence:");
+        Console.WriteLine($"sequences.Add(\"S1\", new List<double>(new double[] {{ {string.Join(", ", doubleList)} }}));");
 
-        // Print the values
-        Console.WriteLine("Key: S1, Values: " + string.Join(", ", sequences["S1"]));
 
         // Prompt the user for input
         Console.WriteLine("Enter some text: ");
