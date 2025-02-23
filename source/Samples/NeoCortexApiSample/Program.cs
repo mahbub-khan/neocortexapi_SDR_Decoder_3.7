@@ -136,16 +136,15 @@ namespace NeoCortexApiSample
             // Predictor is traversing the list element by element. 
             // By providing more elements to the prediction, the predictor delivers more precise result
 
-            // Prompt the user to enter a list of numbers
-            Console.WriteLine("Enter a list of numbers separated by spaces:");
+            //Prompt for taking user input as a text sequence
+            Console.WriteLine("Enter some text: ");
+            string input = Console.ReadLine(); // Take runtime input from the user
 
-            // Read the input
-            string input = Console.ReadLine();
+            // Pass the input to a method for processing
+            List<int> processedText = list_Generation.TokenizeText(input);
 
-            // Convert input string to an array of doubles
-            double[] list1 = input.Split(' ')
-                                  .Select(double.Parse)
-                                  .ToArray();
+            // Convert the processed list to an array of doubles
+            var list1 = processedText.Select(x => (double)x).ToArray();
 
             // Print the array to verify
             Console.WriteLine("You entered:");
