@@ -146,12 +146,8 @@ namespace NeoCortexApiSample
             // Convert the processed list to an array of doubles
             var list1 = processedText.Select(x => (double)x).ToArray();
 
-            // Print the array to verify
-            Console.WriteLine("You entered:");
-            foreach (double num in list1)
-            {
-                Console.Write(num + " ");
-            }
+            // Print the array 
+            Console.WriteLine($"var list1 = new double[] {{ {string.Join(", ", list1)} }};");
 
             //var list1 = new double[] { 1.0, 2.0, 3.0, 4.0, 2.0, 5.0 };
             //var list2 = new double[] { 2.0, 3.0, 4.0 };
