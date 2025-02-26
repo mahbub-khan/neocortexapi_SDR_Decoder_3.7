@@ -7,8 +7,16 @@ using System.Threading.Tasks;
 
 namespace NeoCortexApiSample
 {
+    /// <summary>
+    /// Implements a method for converting text sequence into list.
+    /// </summary>
     internal class List_Generation
     {
+        /// <summary>
+        /// Converts the text input into token and tokenIds and then saves the tokenIds as a list<int>.
+        /// </summary>
+        /// <param name="inputText">A string containg sequence of words.</param>
+        
         List<int> result = new List<int>();
         public List<int> TokenizeText(string inputText)
         {

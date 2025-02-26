@@ -131,10 +131,7 @@ namespace NeoCortexApiSample
             MultiSequenceLearning experiment = new MultiSequenceLearning();
             var predictor = experiment.Run(sequences);
 
-            //
-            // These list are used to see how the prediction works.
-            // Predictor is traversing the list element by element. 
-            // By providing more elements to the prediction, the predictor delivers more precise result
+           
 
             //Prompt for taking user input as a text sequence
             Console.WriteLine("Enter some text: ");
@@ -142,6 +139,11 @@ namespace NeoCortexApiSample
 
             // Pass the input to a method for processing
             List<int> processedText = list_Generation.TokenizeText(input);
+
+            //
+            // These list are used to see how the prediction works.
+            // Predictor is traversing the list element by element. 
+            // By providing more elements to the prediction, the predictor delivers more precise result
 
             // Convert the processed list to an array of doubles
             var list1 = processedText.Select(x => (double)x).ToArray();
