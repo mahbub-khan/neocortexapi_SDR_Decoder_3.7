@@ -19,7 +19,7 @@ namespace WordTokenization
     {
         public void ScalarEncoderTest(Dictionary<string, List<double>> sequences)
         {
-            var outFolder = @"..\..\..\TestFiles\ScalarEncoderResults";
+            var outFolder = @"ScalarEncoderResults";
 
             //ScalarEncoder encoder = new ScalarEncoder(new Dictionary<string, object>()
             //{
