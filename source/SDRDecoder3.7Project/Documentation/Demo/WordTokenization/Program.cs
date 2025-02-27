@@ -38,6 +38,9 @@ class Program
         Console.WriteLine("Generated Sequence:");
         Console.WriteLine($"sequences.Add(\"S1\", new List<double>(new double[] {{ {string.Join(", ", doubleList)} }}));");
 
+        //visualizing SDRs
+        Scaler_Encoder encoder = new Scaler_Encoder();
+        encoder.ScalarEncoderTest(sequences);
 
         // Prompt the user for input
         Console.WriteLine("Enter some text: ");
