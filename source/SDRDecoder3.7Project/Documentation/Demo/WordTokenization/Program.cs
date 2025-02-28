@@ -44,15 +44,25 @@ class Program
 
         // Prompt the user for input
         Console.WriteLine("Enter some text: ");
-        string userInput = Console.ReadLine(); // Take runtime input from the user
+        string userInput1 = Console.ReadLine(); // Take runtime input from the user
 
         // Pass the input to a method for processing
-        List<int> processedText = list_Generation.TokenizeText(userInput);
+        List<int> processedText1 = list_Generation.TokenizeText(userInput1);
 
         // Convert to a list of doubles
-        var list1 = processedText.Select(i => (double)i).ToList();
+        var list1 = processedText1.Select(i => (double)i).ToList();
 
-        
+        // Prompt the user for input
+        Console.WriteLine("Enter another text: ");
+        string userInput2 = Console.ReadLine(); // Take runtime input from the user
+
+        // Pass the input to a method for processing
+        List<int> processedText2 = list_Generation.TokenizeText(userInput2);
+
+        // Convert to a list of doubles
+        var list2 = processedText2.Select(i => (double)i).ToList();
+
+
     }
 }
 
