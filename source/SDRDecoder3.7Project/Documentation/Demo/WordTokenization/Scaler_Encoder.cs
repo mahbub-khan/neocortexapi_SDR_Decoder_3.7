@@ -53,6 +53,7 @@ namespace WordTokenization
             Dictionary<double, int[]> sdrs = new Dictionary<double, int[]>();
 
             List<double> sequenceValue = sequences["S1"];
+           // Console.WriteLine("Values from S1: " + string.Join(", ", sequenceValue));
 
             foreach (double input in sequenceValue)
             {
@@ -67,7 +68,15 @@ namespace WordTokenization
                 int[,] twoDimArray = ArrayUtils.Transpose(twoDimenArray);
                 NeoCortexUtils.DrawBitmap(twoDimArray, 1024, 1024, $"{outFolder}\\{input}.png", Color.PaleGreen, Color.Blue, text: input.ToString());
 
-                sdrs.Add(input, result);
+                if (!sdrs.ContainsKey(input))
+                {
+                    sdrs.Add(input, result);  // Add if key does not exist
+                }
+                else
+                {
+                    Console.WriteLine($"Key '{input}' already exists, skipping.");
+                }
+                //sdrs.Add(input, result);
 
 
             }

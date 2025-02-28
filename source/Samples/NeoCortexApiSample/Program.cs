@@ -91,7 +91,7 @@ namespace NeoCortexApiSample
             Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
             sequences.Add("S1", new List<double>(doubleList));
 
-            // Print to verify
+            // Print to verify the sequence
             Console.WriteLine("Generated Sequence:");
             Console.WriteLine($"sequences.Add(\"S1\", new List<double>(new double[] {{ {string.Join(", ", doubleList)} }}));");
 
@@ -131,7 +131,6 @@ namespace NeoCortexApiSample
             MultiSequenceLearning experiment = new MultiSequenceLearning();
             var predictor = experiment.Run(sequences);
 
-           
 
             //Prompt for taking user input as a text sequence
             Console.WriteLine("Enter some text: ");
