@@ -8,7 +8,7 @@ namespace WordTokenization
 {
     class SDRRetrieval
     {
-        private Dictionary<int, string> sdrDictionary;  // Dictionary to store Token ID -> SDR mappings
+        private Dictionary<double, string> sdrDictionary;  // Dictionary to store Token ID -> SDR mappings
 
         // Constructor: Load SDRs from the file when an object is created
         public SDRRetrieval(string filePath)
@@ -17,9 +17,9 @@ namespace WordTokenization
         }
 
         // Method to load SDR values from file into Dictionary<TokenID, SDR>
-        private Dictionary<int, string> LoadSDRsFromFile(string filePath)
+        private Dictionary<double, string> LoadSDRsFromFile(string filePath)
         {
-            Dictionary<int, string> sdrDict = new Dictionary<int, string>(); // Dictionary to store SDRs
+            Dictionary<double, string> sdrDict = new Dictionary<double, string>(); // Dictionary to store SDRs
 
             // Check if the file exists
             if (!File.Exists(filePath))
@@ -54,9 +54,9 @@ namespace WordTokenization
         }
 
         //  Method to retrieve SDRs for given token IDs
-        public Dictionary<int, string> GetSDRs(List<int> tokenIds)
+        public Dictionary<double, string> GetSDRs(List<double> tokenIds)
         {
-            Dictionary<int, string> resultSDRs = new Dictionary<int, string>();  // Dictionary to store retrieved SDRs
+            Dictionary<double, string> resultSDRs = new Dictionary<double, string>();  // Dictionary to store retrieved SDRs
 
             // Loop through the given token IDs
             foreach (var tokenId in tokenIds)

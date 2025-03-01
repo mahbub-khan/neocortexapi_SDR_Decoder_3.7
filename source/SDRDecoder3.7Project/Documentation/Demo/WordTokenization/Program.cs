@@ -53,11 +53,11 @@ class Program
         var list1 = processedText1.Select(i => (double)i).ToList();
 
         // Step 1: Initialize SDR handler (loads SDRs from file)
-        SDRRetrieval sdrHandler = new SDRRetrieval("sdr_output.txt");
+        SDRRetrieval sdrretrieval = new("sdr_output.txt");
 
 
         // Step 3: Retrieve SDRs for the given token IDs
-        Dictionary<int, string> retrievedSDRs = sdrHandler.GetSDRs(tokenIds);
+        Dictionary<double, string> retrievedSDRs = sdrretrieval.GetSDRs(list1);
 
         //  Step 4: Display retrieved SDRs
         foreach (var kvp in retrievedSDRs)
@@ -75,7 +75,14 @@ class Program
         // Convert to a list of doubles
         var list2 = processedText2.Select(i => (double)i).ToList();
 
+        // Step 3: Retrieve SDRs for the given token IDs
+        Dictionary<double, string> retrievedSDRs2 = sdrretrieval.GetSDRs(list2);
 
+        //  Step 4: Display retrieved SDRs
+        foreach (var kvp in retrievedSDRs2)
+        {
+            Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
+        }
     }
 }
 
