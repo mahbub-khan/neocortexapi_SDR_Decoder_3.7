@@ -63,6 +63,16 @@ namespace WordTokenization
                 Console.WriteLine($"SDRs Generated = {NeoCortexApi.Helpers.StringifyVector(result)}");
                 Console.WriteLine($"SDR As Text = {NeoCortexApi.Helpers.StringifyVector(ArrayUtils.IndexWhere(result, k => k == 1))}");
 
+                //saving the SDR values
+                string sdrGenerated = NeoCortexApi.Helpers.StringifyVector(result);
+                string sdrText = NeoCortexApi.Helpers.StringifyVector(ArrayUtils.IndexWhere(result, k => k == 1));
+
+                string filePath = "sdr_output.txt";
+                string output = $"Input = {input}\nSDRs Generated = {sdrGenerated}\nSDR As Text = {sdrText}\n";
+
+                File.AppendAllText(filePath, output + "\n");
+
+                Console.WriteLine($"SDR saved to {filePath}");
 
                 int[,] twoDimenArray = ArrayUtils.Make2DArray<int>(result, (int)Math.Sqrt(result.Length), (int)Math.Sqrt(result.Length));
                 int[,] twoDimArray = ArrayUtils.Transpose(twoDimenArray);
