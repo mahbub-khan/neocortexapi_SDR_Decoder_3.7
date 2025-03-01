@@ -52,6 +52,19 @@ class Program
         // Convert to a list of doubles
         var list1 = processedText1.Select(i => (double)i).ToList();
 
+        // Step 1: Initialize SDR handler (loads SDRs from file)
+        SDRRetrieval sdrHandler = new SDRRetrieval("sdr_output.txt");
+
+
+        // Step 3: Retrieve SDRs for the given token IDs
+        Dictionary<int, string> retrievedSDRs = sdrHandler.GetSDRs(tokenIds);
+
+        //  Step 4: Display retrieved SDRs
+        foreach (var kvp in retrievedSDRs)
+        {
+            Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
+        }
+
         // Prompt the user for input
         Console.WriteLine("Enter another text: ");
         string userInput2 = Console.ReadLine(); // Take runtime input from the user
