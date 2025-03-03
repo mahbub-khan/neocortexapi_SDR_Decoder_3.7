@@ -75,23 +75,23 @@ class Program
         // Convert to a list of doubles
         var list2 = processedText2.Select(i => (double)i).ToList();
 
-        ////Retrieve SDRs for the given token IDs
-        //Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRs(list2);
-        //// Display retrieved SDRs
-        //foreach (var kvp in retrievedSDRs2)
-        //{
-        //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
-        //}
+        //Retrieve SDRs for the given token IDs
+        Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRs(list2);
+        // Display retrieved SDRs
+        foreach (var kvp in retrievedSDRs2)
+        {
+            Console.WriteLine($"Token ID: {kvp.Key} -> SDR: [{string.Join(", ", kvp.Value)}]");
+        }
 
-        // 🔹 Step 3: Retrieve SDRs from the stored data
+        //Retrieve SDRs from the stored data
         Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
-         Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
+         //Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
 
-        // 🔹 Step 4: Merge all SDRs into single binary vectors
+        // Merge all SDRs into single binary vectors
         int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
         int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
 
-        // 🔹 Step 5: Compute Cosine Similarity between two SDR vectors
+        // Compute Cosine Similarity between two SDR vectors
          double similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
 
         // Display the result

@@ -79,7 +79,7 @@ namespace WordTokenization
         {
             Dictionary<double, int[]> resultSDRs = new Dictionary<double, int[]>();  // Dictionary to store retrieved SDRs
 
-            // Loop through the given token IDs
+          
             // Loop through the given token IDs
             foreach (var tokenId in list)
             {
