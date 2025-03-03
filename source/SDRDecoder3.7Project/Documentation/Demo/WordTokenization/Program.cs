@@ -52,20 +52,20 @@ class Program
         // Convert to a list of doubles
         var list1 = processedText1.Select(i => (double)i).ToList();
 
-        // Step 1: Initialize SDR handler (loads SDRs from file)
+        // Initialize SDR handler (loads SDRs from file)
         SDRRetrieval sdrretrieval = new("sdr_output.txt");
 
 
-        // Step 3: Retrieve SDRs for the given token IDs
-        Dictionary<double, string> retrievedSDRs = sdrretrieval.GetSDRs(list1);
 
-        //  Step 4: Display retrieved SDRs
-        foreach (var kvp in retrievedSDRs)
-        {
-            Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
-        }
+        //// Retrieve SDRs for the given token IDs
+        //Dictionary<double, string> retrievedSDRs = sdrretrieval.GetSDRs(list1);
+        ////Display retrieved SDRs
+        //foreach (var kvp in retrievedSDRs)
+        //{
+        //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
+        //}
 
-        // Prompt the user for input
+        // Prompt the user for another input
         Console.WriteLine("Enter another text: ");
         string userInput2 = Console.ReadLine(); // Take runtime input from the user
 
@@ -75,14 +75,53 @@ class Program
         // Convert to a list of doubles
         var list2 = processedText2.Select(i => (double)i).ToList();
 
-        // Step 3: Retrieve SDRs for the given token IDs
-        Dictionary<double, string> retrievedSDRs2 = sdrretrieval.GetSDRs(list2);
+        ////Retrieve SDRs for the given token IDs
+        //Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRs(list2);
+        //// Display retrieved SDRs
+        //foreach (var kvp in retrievedSDRs2)
+        //{
+        //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
+        //}
 
-        //  Step 4: Display retrieved SDRs
-        foreach (var kvp in retrievedSDRs2)
+        // 🔹 Step 3: Retrieve SDRs from the stored data
+        Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
+         Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
+
+        // 🔹 Step 4: Merge all SDRs into single binary vectors
+        int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
+        int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
+
+        // 🔹 Step 5: Compute Cosine Similarity between two SDR vectors
+         double similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
+
+        // Display the result
+        Console.WriteLine($"\nCosine Similarity: {similarity:0.00}");
+    }
+    
+
+    /// <summary>
+    /// Merges multiple SDRs into a single binary vector using logical OR.
+    /// </summary>
+    /// <param name="sdrs">Dictionary of SDRs mapped to token IDs.</param>
+    /// <returns>A single merged SDR vector.</returns>
+    static int[] MergeSDRs(Dictionary<double, int[]> sdrs)
+    {
+        if (sdrs.Count == 0) return new int[1]; // Return an empty SDR if no data
+
+        // Find the maximum length of SDRs
+        int maxLength = sdrs.Values.Max(sdr => sdr.Length);
+        int[] mergedSDR = new int[maxLength];
+
+        // Combine SDRs using logical OR
+        foreach (var sdr in sdrs.Values)
         {
-            Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
+            for (int i = 0; i < sdr.Length; i++)
+            {
+                if (sdr[i] == 1)
+                    mergedSDR[i] = 1; // Preserve active bits
+            }
         }
+        return mergedSDR;
     }
 }
 

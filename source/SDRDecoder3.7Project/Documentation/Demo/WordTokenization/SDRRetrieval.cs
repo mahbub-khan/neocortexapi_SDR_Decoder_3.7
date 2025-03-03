@@ -8,7 +8,7 @@ namespace WordTokenization
 {
     class SDRRetrieval
     {
-        private Dictionary<double, string> sdrDictionary;  // Dictionary to store Token ID -> SDR mappings
+        private Dictionary<double, int[]> sdrDictionary;  // Dictionary to store Token ID -> SDR mappings
 
         // Constructor: Load SDRs from the file when an object is created
         public SDRRetrieval(string filePath)
@@ -17,9 +17,9 @@ namespace WordTokenization
         }
 
         // Method to load SDR values from file into Dictionary<TokenID, SDR>
-        private Dictionary<double, string> LoadSDRsFromFile(string filePath)
+        public Dictionary<double, int[]> LoadSDRsFromFile(string filePath)
         {
-            Dictionary<double, string> sdrDict = new Dictionary<double, string>(); // Dictionary to store SDRs
+            Dictionary<double, int[]> sdrDict = new Dictionary<double, int[]>(); // Dictionary to store SDRs
 
             // Check if the file exists
             if (!File.Exists(filePath))
@@ -30,7 +30,7 @@ namespace WordTokenization
 
             string[] lines = File.ReadAllLines(filePath);  // Read all lines from the SDR file
             int tokenId = -1;  // Variable to store Token ID
-            string sdr = null;  // Variable to store SDR values
+            int[] sdr = null;  // Variable to store SDR values
 
             // Process each line in the file
             foreach (string line in lines)
@@ -41,7 +41,8 @@ namespace WordTokenization
                 }
                 else if (line.StartsWith("SDRs Generated = "))  // Check if the line contains SDR values
                 {
-                    sdr = line.Replace("SDRs Generated = ", "").Trim();  // Extract SDR string
+                    string[] values = line.Replace("SDRs Generated = ", "").Trim().Split(',');
+                    sdr = values.Where(v => !string.IsNullOrWhiteSpace(v)).Select(v => int.Parse(v)).ToArray();
 
                     // Store Token ID and corresponding SDR in the dictionary
                     if (tokenId != -1 && sdr != null)
@@ -54,15 +55,15 @@ namespace WordTokenization
         }
 
         //  Method to retrieve SDRs for given token IDs
-        public Dictionary<double, string> GetSDRs(List<double> tokenIds)
+        public Dictionary<double, int[]> GetSDRs(List<double> tokenIds)
         {
-            Dictionary<double, string> resultSDRs = new Dictionary<double, string>();  // Dictionary to store retrieved SDRs
+            Dictionary<double, int[]> resultSDRs = new Dictionary<double, int[]>();  // Dictionary to store retrieved SDRs
 
             // Loop through the given token IDs
             foreach (var tokenId in tokenIds)
             {
                 // Check if the SDR exists for this Token ID
-                if (sdrDictionary.TryGetValue(tokenId, out string sdr))
+                if (sdrDictionary.TryGetValue(tokenId, out int[] sdr))
                 {
                     resultSDRs[tokenId] = sdr;  // Store the SDR for this Token ID
                 }
@@ -73,6 +74,29 @@ namespace WordTokenization
             }
             return resultSDRs;  // Return dictionary containing retrieved SDRs
         }
+
+        public Dictionary<double, int[]> GetSDRsAsVectors(List<double> list)
+        {
+            Dictionary<double, int[]> resultSDRs = new Dictionary<double, int[]>();  // Dictionary to store retrieved SDRs
+
+            // Loop through the given token IDs
+            // Loop through the given token IDs
+            foreach (var tokenId in list)
+            {
+                // Check if the SDR exists for this Token ID
+                if (sdrDictionary.TryGetValue(tokenId, out int[] sdr))
+                {
+                    resultSDRs[tokenId] = sdr;  // Store the SDR for this Token ID
+                }
+                else
+                {
+                    Console.WriteLine($"Warning: SDR not found for Token ID {tokenId}");  // Print warning if SDR is missing
+                    resultSDRs[tokenId] = new int[100]; // Return an empty SDR vector of the same size
+                }
+            }
+            return resultSDRs;  // Return dictionary containing retrieved SDRs
+        }
     }
+ 
 }
 
