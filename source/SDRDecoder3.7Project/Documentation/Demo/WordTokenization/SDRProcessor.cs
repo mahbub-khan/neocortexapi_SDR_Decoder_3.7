@@ -35,6 +35,10 @@ namespace WordTokenization
             // Avoid division by zero
             return (magnitude1 == 0 || magnitude2 == 0) ? 0 : (dotProduct / (magnitude1 * magnitude2));
         }
+        public static double EuclidSimilarity(int[] vec1, int[] vec2)
+        {
+            return 0;
+        }
     }
 
 }

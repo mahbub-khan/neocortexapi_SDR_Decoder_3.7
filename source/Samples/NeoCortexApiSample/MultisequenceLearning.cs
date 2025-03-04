@@ -56,7 +56,7 @@ namespace NeoCortexApiSample
             };
 
             //double max = 1303;
-            double max = 2910;
+            double max = 4000;
 
             Dictionary<string, object> settings = new Dictionary<string, object>()
             {

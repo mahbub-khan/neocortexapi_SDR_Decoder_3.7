@@ -35,7 +35,7 @@ namespace WordTokenization
             int inputBits = 100;
             int numColumns = 1024;
 
-            double max = 2910;
+            double max = 14000;
 
             Dictionary<string, object> settings = new Dictionary<string, object>()
             {
