@@ -35,10 +35,22 @@ namespace WordTokenization
             // Avoid division by zero
             return (magnitude1 == 0 || magnitude2 == 0) ? 0 : (dotProduct / (magnitude1 * magnitude2));
         }
-        public static double EuclidSimilarity(int[] vec1, int[] vec2)
-        {
-            return 0;
-        }
+        public static double EuclideanSimilarity(int[] vec1, int[] vec2)
+            {
+                double sumSquaredDifferences = 0;
+
+                // Ensure both vectors have the same length
+                int minLength = Math.Min(vec1.Length, vec2.Length);
+                for (int i = 0; i < minLength; i++)
+                {
+                    sumSquaredDifferences += Math.Pow(vec1[i] - vec2[i], 2);
+                }
+
+                // Compute Euclidean distance
+                double euclideanDistance = Math.Sqrt(sumSquaredDifferences);
+
+                return euclideanDistance;
+            }
     }
 
 }
