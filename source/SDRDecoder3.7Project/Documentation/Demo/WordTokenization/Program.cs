@@ -92,10 +92,11 @@ class Program
         int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
 
         // Compute Cosine Similarity between two SDR vectors
-         double similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
+        double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
+        double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2);
 
         // Display the result
-        Console.WriteLine($"\nCosine Similarity: {similarity:0.00}");
+        Console.WriteLine($"\nCosine Similarity: {Cos_similarity:0.00} \n Euclidean Similarity: {Euclid_similarity:0.00}");
     }
     
 
