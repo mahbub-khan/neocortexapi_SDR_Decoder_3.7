@@ -49,8 +49,9 @@ namespace WordTokenization
                 // Compute Euclidean distance
                 double euclideanDistance = Math.Sqrt(sumSquaredDifferences);
 
-                return euclideanDistance;
-            }
+                // Convert distance to similarity (higher value means more similar)
+                return 1 / (1 + euclideanDistance); 
+        }
     }
 
 }
