@@ -1,102 +1,97 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WordTokenization
 {
     class SDRRetrieval
     {
-        private Dictionary<double, int[]> sdrDictionary;  // Dictionary to store Token ID -> SDR mappings
+        private Dictionary<double, List<int>> sdrDictionary;  // Store Token ID -> SDR (as list of indices)
 
-        // Constructor: Load SDRs from the file when an object is created
         public SDRRetrieval(string filePath)
         {
             sdrDictionary = LoadSDRsFromFile(filePath);
         }
 
-        // Method to load SDR values from file into Dictionary<TokenID, SDR>
-        public Dictionary<double, int[]> LoadSDRsFromFile(string filePath)
+        private Dictionary<double, List<int>> LoadSDRsFromFile(string filePath)
         {
-            Dictionary<double, int[]> sdrDict = new Dictionary<double, int[]>(); // Dictionary to store SDRs
+            Dictionary<double, List<int>> sdrDict = new Dictionary<double, List<int>>();
 
-            // Check if the file exists
             if (!File.Exists(filePath))
             {
-                Console.WriteLine("SDR file not found!");  // Print warning if the file is missing
-                return sdrDict;  // Return an empty dictionary
+                Console.WriteLine("SDR file not found!");
+                return sdrDict;
             }
 
-            string[] lines = File.ReadAllLines(filePath);  // Read all lines from the SDR file
-            int tokenId = -1;  // Variable to store Token ID
-            int[] sdr = null;  // Variable to store SDR values
+            string[] lines = File.ReadAllLines(filePath);
+            double tokenId = -1;
+            List<int> sdrIndices = null;
 
-            // Process each line in the file
             foreach (string line in lines)
             {
-                if (line.StartsWith("Input = "))  // Check if the line contains a Token ID
+                if (line.StartsWith("Input = "))
                 {
-                    tokenId = int.Parse(line.Replace("Input = ", "").Trim());  // Extract Token ID
+                    tokenId = double.Parse(line.Replace("Input = ", "").Trim());
                 }
-                else if (line.StartsWith("SDRs Generated = "))  // Check if the line contains SDR values
+                else if (line.StartsWith("SDR As Text = "))
                 {
-                    string[] values = line.Replace("SDRs Generated = ", "").Trim().Split(',');
-                    sdr = values.Where(v => !string.IsNullOrWhiteSpace(v)).Select(v => int.Parse(v)).ToArray();
+                    sdrIndices = line.Replace("SDR As Text = ", "")
+                                     .Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+                                     .Select(int.Parse)
+                                     .ToList();
 
-                    // Store Token ID and corresponding SDR in the dictionary
-                    if (tokenId != -1 && sdr != null)
+                    if (tokenId != -1 && sdrIndices != null)
                     {
-                        sdrDict[tokenId] = sdr;
+                        sdrDict[tokenId] = sdrIndices;
                     }
                 }
             }
-            return sdrDict;  // Return the dictionary containing SDR mappings
+            return sdrDict;
         }
 
-        //  Method to retrieve SDRs for given token IDs
-        public Dictionary<double, int[]> GetSDRs(List<double> tokenIds)
+        public Dictionary<double, List<int>> GetSDRs(List<double> tokenIds)
         {
-            Dictionary<double, int[]> resultSDRs = new Dictionary<double, int[]>();  // Dictionary to store retrieved SDRs
+            Dictionary<double, List<int>> resultSDRs = new Dictionary<double, List<int>>();
 
-            // Loop through the given token IDs
             foreach (var tokenId in tokenIds)
             {
-                // Check if the SDR exists for this Token ID
-                if (sdrDictionary.TryGetValue(tokenId, out int[] sdr))
+                if (sdrDictionary.TryGetValue(tokenId, out List<int> sdr))
                 {
-                    resultSDRs[tokenId] = sdr;  // Store the SDR for this Token ID
+                    resultSDRs[tokenId] = sdr;
                 }
                 else
                 {
-                    Console.WriteLine($"Warning: SDR not found for Token ID {tokenId}");  // Print warning if SDR is missing
+                    Console.WriteLine($"Warning: SDR not found for Token ID {tokenId}");
                 }
             }
-            return resultSDRs;  // Return dictionary containing retrieved SDRs
+            return resultSDRs;
         }
 
-        public Dictionary<double, int[]> GetSDRsAsVectors(List<double> list)
+        public static double ComputeCosineSimilarity(List<int> sdr1, List<int> sdr2)
         {
-            Dictionary<double, int[]> resultSDRs = new Dictionary<double, int[]>();  // Dictionary to store retrieved SDRs
+            HashSet<int> set1 = new HashSet<int>(sdr1);
+            HashSet<int> set2 = new HashSet<int>(sdr2);
 
-          
-            // Loop through the given token IDs
-            foreach (var tokenId in list)
-            {
-                // Check if the SDR exists for this Token ID
-                if (sdrDictionary.TryGetValue(tokenId, out int[] sdr))
-                {
-                    resultSDRs[tokenId] = sdr;  // Store the SDR for this Token ID
-                }
-                else
-                {
-                    Console.WriteLine($"Warning: SDR not found for Token ID {tokenId}");  // Print warning if SDR is missing
-                    resultSDRs[tokenId] = new int[100]; // Return an empty SDR vector of the same size
-                }
-            }
-            return resultSDRs;  // Return dictionary containing retrieved SDRs
+            int intersection = set1.Intersect(set2).Count();
+            double magnitude1 = Math.Sqrt(set1.Count);
+            double magnitude2 = Math.Sqrt(set2.Count);
+
+            if (magnitude1 == 0 || magnitude2 == 0) return 0.0;
+            return intersection / (magnitude1 * magnitude2);
+        }
+
+        public static void DebugSDRs(List<int> mergedSDR1, List<int> mergedSDR2)
+        {
+            Console.WriteLine("\n Merged SDR 1: " + string.Join(", ", mergedSDR1));
+            Console.WriteLine("\nMerged SDR 2: " + string.Join(", ", mergedSDR2));
+
+            Console.WriteLine($"\n Active bits count in SDR 1: {mergedSDR1.Count}");
+            Console.WriteLine($" Active bits count in SDR 2: {mergedSDR2.Count}");
+
+            var commonBits = mergedSDR1.Intersect(mergedSDR2).ToList();
+            Console.WriteLine($" Common active bits count: {commonBits.Count}");
+            Console.WriteLine(" Common active bits: " + string.Join(", ", commonBits));
         }
     }
- 
 }
-

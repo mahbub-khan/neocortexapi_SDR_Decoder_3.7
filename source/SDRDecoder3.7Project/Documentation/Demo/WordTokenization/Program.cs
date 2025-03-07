@@ -87,17 +87,31 @@ class Program
             //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: [{string.Join(", ", kvp.Value)}]");
             //}
 
-            //Retrieve SDRs from the stored data
+            ////Retrieve SDRs from the stored data
             Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
             Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
 
-            // Merge all SDRs into single binary vectors
-            int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
-            int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
+            //// Merge all SDRs into single binary vectors
+            //int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
+            //int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
+
+            // Merging SDRs for "am a mother"
+            List<int> mergedSDR1 = retrievedSDRs1.Values.SelectMany(x => x).Distinct().ToList();
+
+            // Merging SDRs for "also a sister"
+            List<int> mergedSDR2 = retrievedSDRs2.Values.SelectMany(x => x).Distinct().ToList();
+
+            // Debug SDRs before calculating similarity
+            SDRRetrieval.DebugSDRs(mergedSDR1, mergedSDR2);
+
+            // Compute Cosine Similarity
+            double similarity = SDRRetrieval.ComputeCosineSimilarity(mergedSDR1, mergedSDR2);
+            Console.WriteLine($"Cosine Similarity: {similarity}");
+
 
             // Compute Cosine Similarity between two SDR vectors
-            double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
-            double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2);
+            //double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
+            //double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2);
 
             // Display the result
             Console.WriteLine($"\nCosine Similarity: {Cos_similarity:0.00} \n Euclidean Similarity: {Euclid_similarity:0.00}");
