@@ -47,74 +47,68 @@ class Program
 
         while (true)
         {
-            // Prompt the user for input
-            Console.WriteLine("Enter some text: ");
-            string userInput1 = Console.ReadLine(); // Take runtime input from the user
+            {
+                // Prompt the user for input
+                Console.WriteLine("Enter some text: ");
+                string userInput1 = Console.ReadLine(); // Take runtime input from the user
 
-            // Pass the input to a method for processing
-            List<int> processedText1 = list_Generation.TokenizeText(userInput1);
+                // Pass the input to a method for processing
+                List<int> processedText1 = list_Generation.TokenizeText(userInput1);
 
-            // Convert to a list of doubles
-            var list1 = processedText1.Select(i => (double)i).ToList();
-
-
-
+                // Convert to a list of doubles
+                var list1 = processedText1.Select(i => (double)i).ToList();
 
 
-            //// Retrieve SDRs for the given token IDs
-            //Dictionary<double, string> retrievedSDRs = sdrretrieval.GetSDRs(list1);
-            ////Display retrieved SDRs
-            //foreach (var kvp in retrievedSDRs)
-            //{
-            //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
-            //}
-
-            // Prompt the user for another input
-            Console.WriteLine("Enter another text: ");
-            string userInput2 = Console.ReadLine(); // Take runtime input from the user
-
-            // Pass the input to a method for processing
-            List<int> processedText2 = list_Generation.TokenizeText(userInput2);
-
-            // Convert to a list of doubles
-            var list2 = processedText2.Select(i => (double)i).ToList();
-
-            ////Retrieve SDRs for the given token IDs
-            //Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRs(list2);
-            //// Display retrieved SDRs
-            //foreach (var kvp in retrievedSDRs2)
-            //{
-            //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: [{string.Join(", ", kvp.Value)}]");
-            //}
-
-            ////Retrieve SDRs from the stored data
-            Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
-            Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
-
-            //// Merge all SDRs into single binary vectors
-            //int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
-            //int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
-
-            // Merging SDRs for "am a mother"
-            List<int> mergedSDR1 = retrievedSDRs1.Values.SelectMany(x => x).Distinct().ToList();
-
-            // Merging SDRs for "also a sister"
-            List<int> mergedSDR2 = retrievedSDRs2.Values.SelectMany(x => x).Distinct().ToList();
-
-            // Debug SDRs before calculating similarity
-            SDRRetrieval.DebugSDRs(mergedSDR1, mergedSDR2);
-
-            // Compute Cosine Similarity
-            double similarity = SDRRetrieval.ComputeCosineSimilarity(mergedSDR1, mergedSDR2);
-            Console.WriteLine($"Cosine Similarity: {similarity}");
 
 
-            // Compute Cosine Similarity between two SDR vectors
-            //double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
-            //double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2);
 
-            // Display the result
-            Console.WriteLine($"\nCosine Similarity: {Cos_similarity:0.00} \n Euclidean Similarity: {Euclid_similarity:0.00}");
+                //// Retrieve SDRs for the given token IDs
+                //Dictionary<double, string> retrievedSDRs = sdrretrieval.GetSDRs(list1);
+                ////Display retrieved SDRs
+                //foreach (var kvp in retrievedSDRs)
+                //{
+                //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
+                //}
+
+                // Prompt the user for another input
+                Console.WriteLine("Enter another text: ");
+                string userInput2 = Console.ReadLine(); // Take runtime input from the user
+
+                // Pass the input to a method for processing
+                List<int> processedText2 = list_Generation.TokenizeText(userInput2);
+
+                // Convert to a list of doubles
+                var list2 = processedText2.Select(i => (double)i).ToList();
+
+                ////Retrieve SDRs for the given token IDs
+                //Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRs(list2);
+                //// Display retrieved SDRs
+                //foreach (var kvp in retrievedSDRs2)
+                //{
+                //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: [{string.Join(", ", kvp.Value)}]");
+                //}
+
+                //Retrieve SDRs from the stored data
+                Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
+                Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
+
+                // Merge all SDRs into single binary vectors
+                // int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr =>
+                //  sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
+                //).Distinct().ToArray();
+                int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
+                int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
+
+                // Debug SDRs before calculating similarity
+                DebugSDRs(sdrVector1, sdrVector2);
+
+                // Compute Cosine Similarity between two SDR vectors
+                double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
+                double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2);
+
+                // Display the result
+                Console.WriteLine($"\nCosine Similarity: {Cos_similarity:0.00} \n Euclidean Similarity: {Euclid_similarity:0.00}");
+            }
         }
     }
     
@@ -143,5 +137,17 @@ class Program
         }
         return mergedSDR;
     }
+
+    public static void DebugSDRs(int[] mergedSDR1, int[] mergedSDR2)
+    {
+        Console.WriteLine("Sparse Merged SDR 1: " + string.Join(", ", mergedSDR1));
+        Console.WriteLine("Sparse Merged SDR 2: " + string.Join(", ", mergedSDR2));
+        Console.WriteLine("Common SDRs: " + string.Join(", ", mergedSDR1.Intersect(mergedSDR2)));
+        Console.WriteLine("Total Active Bits in SDR 1: " + mergedSDR1.Length);
+        Console.WriteLine("Total Active Bits in SDR 2: " + mergedSDR2.Length);
+        Console.WriteLine("Common Active Bits: " + mergedSDR1.Intersect(mergedSDR2).Count());
+
+    }
+
 }
 
