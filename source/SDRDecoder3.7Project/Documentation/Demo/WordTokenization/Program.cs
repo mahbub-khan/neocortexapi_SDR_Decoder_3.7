@@ -117,30 +117,7 @@ class Program
     }
     
 
-    /// <summary>
-    /// Merges multiple SDRs into a single binary vector using logical OR.
-    /// </summary>
-    /// <param name="sdrs">Dictionary of SDRs mapped to token IDs.</param>
-    /// <returns>A single merged SDR vector.</returns>
-    static int[] MergeSDRs(Dictionary<double, int[]> sdrs)
-    {
-        if (sdrs.Count == 0) return new int[1]; // Return an empty SDR if no data
 
-        // Find the maximum length of SDRs
-        int maxLength = sdrs.Values.Max(sdr => sdr.Length);
-        int[] mergedSDR = new int[maxLength];
-
-        // Combine SDRs using logical OR
-        foreach (var sdr in sdrs.Values)
-        {
-            for (int i = 0; i < sdr.Length; i++)
-            {
-                if (sdr[i] == 1)
-                    mergedSDR[i] = 1; // Preserve active bits
-            }
-        }
-        return mergedSDR;
-    }
 
     public static void DebugSDRs(int[] mergedSDR1, int[] mergedSDR2)
     {
