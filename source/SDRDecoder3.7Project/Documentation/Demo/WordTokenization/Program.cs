@@ -93,11 +93,15 @@ class Program
                 Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
 
                 // Merge all SDRs into single binary vectors
-                // int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr =>
-                //  sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
-                //).Distinct().ToArray();
-                int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
-                int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
+                 int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr =>
+                  sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
+                ).Distinct().ToArray();
+
+                int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr =>
+                  sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
+                ).Distinct().ToArray();
+                // int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
+                //int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
 
                 // Debug SDRs before calculating similarity
                 DebugSDRs(sdrVector1, sdrVector2);
