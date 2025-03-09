@@ -45,9 +45,7 @@ class Program
         // Initialize SDR handler (loads SDRs from file)
         SDRRetrieval sdrretrieval = new("sdr_output.txt");
 
-        while (true)
-        {
-            {
+        
                 // Prompt the user for input
                 Console.WriteLine("Enter some text: ");
                 string userInput1 = Console.ReadLine(); // Take runtime input from the user
@@ -93,9 +91,9 @@ class Program
                 Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
 
                 // Merge all SDRs into single binary vectors
-                 int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr =>
-                  sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
-                ).Distinct().ToArray();
+                int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr =>
+                 sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
+               ).Distinct().ToArray();
 
                 int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr =>
                   sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
@@ -111,12 +109,12 @@ class Program
                 double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2);
 
                 // Display the result
-                Console.WriteLine($"\nCosine Similarity: {Cos_similarity:0.00} \n Euclidean Similarity: {Euclid_similarity:0.00}");
-            }
-        }
-    }
-    
+                Console.WriteLine($"\nCosine Similarity: {Cos_similarity:0.00} \nEuclidean Similarity: {Euclid_similarity:0.00}");
 
+
+        
+
+    }
 
 
     public static void DebugSDRs(int[] mergedSDR1, int[] mergedSDR2)
@@ -129,6 +127,7 @@ class Program
         Console.WriteLine("Common Active Bits: " + mergedSDR1.Intersect(mergedSDR2).Count());
 
     }
-
 }
+
+
 
