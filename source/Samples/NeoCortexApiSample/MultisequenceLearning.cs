@@ -208,6 +208,7 @@ namespace NeoCortexApiSample
                         var lyrOut = layer1.Compute(input, true) as ComputeCycle;
 
                         var activeColumns = layer1.GetResult("sp") as int[];
+                        VisualizeSDR(activeColumns, 1024);
 
                         previousInputs.Add(input.ToString());
                         if (previousInputs.Count > (maxPrevInputs + 1))
@@ -312,7 +313,20 @@ namespace NeoCortexApiSample
             return new Predictor(layer1, mem, cls);
         }
 
-      
+        private void VisualizeSDR(int[] sdr, int numColumns)
+        {
+            int columnsPerRow = (int)Math.Sqrt(numColumns);
+            for (int i = 0; i < sdr.Length; i++)
+            {
+                if (i % columnsPerRow == 0)
+                    Console.WriteLine(); // New line for each row
+
+                Console.Write(sdr[i] == 1 ? "1 " : "0 ");
+            }
+            Console.WriteLine();
+        }
+
+
         /// <summary>
         /// Gets the number of all unique inputs.
         /// </summary>
