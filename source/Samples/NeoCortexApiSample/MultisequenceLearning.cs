@@ -328,6 +328,59 @@ namespace NeoCortexApiSample
             return denseVector;
         }
 
+        public void TrainEmbeddingModel(Dictionary<string, List<double>> sequences)
+        {
+            // Generate SDRs for subsequences
+            var sdr1 = GenerateSDR(sequences["Sequence1"]);
+            var sdr2 = GenerateSDR(sequences["Sequence2"]);
+
+            // Compare SDRs using cosine similarity
+            double similarity = CosineSimilarity(sdr1, sdr2);
+
+            Console.WriteLine($"Similarity between Sequence1 and Sequence2: {similarity}");
+        }
+
+        private int[] GenerateSDR(List<double> sequence)
+        {
+            // Initialize an array to store the combined SDR
+            var combinedSdr = new int[100]; // inputBits is the size of the SDR
+
+            // Iterate through each input in the sequence
+            foreach (var input in sequence)
+            {
+                // Encode the input into an SDR using the encoder
+                var encodedInput = encoder.Encode(input);
+
+                // Compute the SDR using the Spatial Pooler
+                var lyrOut = layer1.Compute(encodedInput, true) as ComputeCycle;
+
+                // Get the active columns (SDR) from the Spatial Pooler
+                var activeColumns = layer1.GetResult("sp") as int[];
+
+                // Combine the active columns into the combined SDR
+                foreach (var column in activeColumns)
+                {
+                    combinedSdr[column] = 1; // Mark the column as active
+                }
+            }
+
+            return combinedSdr;
+        }
+
+        private double CosineSimilarity(int[] sdr1, int[] sdr2)
+        {
+            double dotProduct = 0.0, magnitude1 = 0.0, magnitude2 = 0.0;
+            for (int i = 0; i < sdr1.Length; i++)
+            {
+                dotProduct += sdr1[i] * sdr2[i];
+                magnitude1 += Math.Pow(sdr1[i], 2);
+                magnitude2 += Math.Pow(sdr2[i], 2);
+            }
+            magnitude1 = Math.Sqrt(magnitude1);
+            magnitude2 = Math.Sqrt(magnitude2);
+            return dotProduct / (magnitude1 * magnitude2);
+        }
+
 
         /// <summary>
         /// Gets the number of all unique inputs.
