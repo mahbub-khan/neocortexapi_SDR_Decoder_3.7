@@ -7,6 +7,7 @@ using Org.BouncyCastle.Asn1.Tsp;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 
@@ -208,7 +209,10 @@ namespace NeoCortexApiSample
                         var lyrOut = layer1.Compute(input, true) as ComputeCycle;
 
                         var activeColumns = layer1.GetResult("sp") as int[];
-                        VisualizeSDR(activeColumns, 1024);
+                        int[] denseSDR = ConvertSparseToDense(activeColumns, 1024);
+
+                        // Print the dense SDR
+                        Debug.WriteLine($"Dense SDR: {Helpers.StringifyVector(denseSDR)}");
 
                         previousInputs.Add(input.ToString());
                         if (previousInputs.Count > (maxPrevInputs + 1))
@@ -236,6 +240,7 @@ namespace NeoCortexApiSample
                         }
 
                         cls.Learn(key, actCells.ToArray());
+                        
 
                         Debug.WriteLine($"Col  SDR: {Helpers.StringifyVector(lyrOut.ActivColumnIndicies)}");
                         Debug.WriteLine($"Cell SDR: {Helpers.StringifyVector(actCells.Select(c => c.Index).ToArray())}");
@@ -313,17 +318,14 @@ namespace NeoCortexApiSample
             return new Predictor(layer1, mem, cls);
         }
 
-        private void VisualizeSDR(int[] sdr, int numColumns)
+        private int[] ConvertSparseToDense(int[] sparseIndices, int numColumns)
         {
-            int columnsPerRow = (int)Math.Sqrt(numColumns);
-            for (int i = 0; i < sdr.Length; i++)
+            int[] denseVector = new int[numColumns]; // Initialize a vector of zeros
+            foreach (var index in sparseIndices)
             {
-                if (i % columnsPerRow == 0)
-                    Console.WriteLine(); // New line for each row
-
-                Console.Write(sdr[i] == 1 ? "1 " : "0 ");
+                denseVector[index] = 1; // Set active columns to 1
             }
-            Console.WriteLine();
+            return denseVector;
         }
 
 
