@@ -8,9 +8,7 @@ using System.Threading.Tasks;
 using NeoCortexApi.Encoders;
 
 using NeoCortexApi.Entities;   // Common utilities
-//using NeoCortex.Utils;  // For mathematical functions
 
-//using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NeoCortex;
 
 namespace WordTokenization
@@ -20,17 +18,6 @@ namespace WordTokenization
         public void ScalarEncoderTest(Dictionary<string, List<double>> sequences)
         {
             var outFolder = @"ScalarEncoderResults";
-
-            //ScalarEncoder encoder = new ScalarEncoder(new Dictionary<string, object>()
-            //{
-            //    { "W", 3},       // 2% Approx 
-            //    { "N", 100},
-            //    { "MinVal", (double)0},
-            //    { "MaxVal", (double)99},
-            //    { "Periodic", true},
-            //    { "Name", "Scalar Sequence"},
-            //    { "ClipInput", true},
-            //});
 
             int inputBits = 100;
             int numColumns = 1024;

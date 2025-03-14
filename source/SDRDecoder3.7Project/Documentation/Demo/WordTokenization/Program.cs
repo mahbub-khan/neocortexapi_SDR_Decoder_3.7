@@ -1,12 +1,12 @@
 ﻿namespace WordTokenization;
+using NeoCortexApi;
+using NeoCortexApi.Entities;
+using NeoCortexApi.Network;
+using NeoCortexApi.Utility;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using NeoCortexApi;
-using NeoCortexApi.Encoders;
 
 
 class Program
@@ -37,6 +37,7 @@ class Program
         // Print to verify
         Console.WriteLine("Generated Sequence:");
         Console.WriteLine($"sequences.Add(\"S1\", new List<double>(new double[] {{ {string.Join(", ", doubleList)} }}));");
+
 
         //visualizing SDRs
         Scaler_Encoder encoder = new Scaler_Encoder();
@@ -98,8 +99,6 @@ class Program
                 int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr =>
                   sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
                 ).Distinct().ToArray();
-                // int[] sdrVector1 = MergeSDRs(retrievedSDRs1);
-                //int[] sdrVector2 = MergeSDRs(retrievedSDRs2);
 
                 // Debug SDRs before calculating similarity
                 DebugSDRs(sdrVector1, sdrVector2);
