@@ -328,11 +328,11 @@ namespace NeoCortexApiSample
             return denseVector;
         }
 
-        public void TrainEmbeddingModel(Dictionary<string, List<double>> sequences)
+        public void TrainEmbeddingModel(Dictionary<string, List<double>> sequences, EncoderBase encoder, CortexLayer<object, object> layer1, int inputBits)
         {
             // Generate SDRs for subsequences
-            var sdr1 = GenerateSDR(sequences["Sequence1"]);
-            var sdr2 = GenerateSDR(sequences["Sequence2"]);
+            var sdr1 = GenerateSDR(sequences["S1"], encoder, layer1, inputBits);
+            var sdr2 = GenerateSDR(sequences["S2"], encoder, layer1, inputBits);
 
             // Compare SDRs using cosine similarity
             double similarity = CosineSimilarity(sdr1, sdr2);
@@ -340,10 +340,13 @@ namespace NeoCortexApiSample
             Console.WriteLine($"Similarity between Sequence1 and Sequence2: {similarity}");
         }
 
-        private int[] GenerateSDR(List<double> sequence)
+        private int[] GenerateSDR(List<double> sequence, EncoderBase encoder, CortexLayer<object, object> layer1, int inputBits)
         {
+            if (sequence.Count == 0)
+                return new int[inputBits]; // Return an empty SDR for an empty sequence
+
             // Initialize an array to store the combined SDR
-            var combinedSdr = new int[100]; // inputBits is the size of the SDR
+            var combinedSdr = new int[inputBits];
 
             // Iterate through each input in the sequence
             foreach (var input in sequence)
