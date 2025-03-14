@@ -314,7 +314,10 @@ namespace NeoCortexApiSample
             }
 
             Debug.WriteLine("------------ END ------------");
-           
+
+            // Call TrainEmbeddingModel to compare sequences
+            TrainEmbeddingModel(sequences, encoder, layer1, inputBits);
+
             return new Predictor(layer1, mem, cls);
         }
 
