@@ -346,10 +346,6 @@ namespace NeoCortexApiSample
 
         private int[] GenerateSDR(List<double> sequence, EncoderBase encoder, CortexLayer<object, object> layer1, int inputBits)
         {
-            Debug.WriteLine($"sequence= {{ {string.Join(", ", sequence)} }};");
-            var list1 = sequence.Select(x => (double)x).ToArray();
-            Debug.WriteLine($" {{ {string.Join(", ", list1)} }};");
-
             if (sequence.Count == 0)
                 return new int[inputBits]; // Return an empty SDR for an empty sequence
 
@@ -357,7 +353,7 @@ namespace NeoCortexApiSample
             var combinedSdr = new int[inputBits];
 
             // Iterate through each input in the sequence
-            foreach (var input in list1)
+            foreach (var input in sequence)
             {
                 // Encode the input into an SDR using the encoder
                 var encodedInput = encoder.Encode(input);
@@ -365,18 +361,15 @@ namespace NeoCortexApiSample
                 {
                     throw new InvalidOperationException("Encoder returned null.");
                 }
-                Debug.WriteLine($" Encoded Input: {Helpers.StringifyVector(encodedInput)}");
+                Debug.WriteLine($"Encoded Input: {Helpers.StringifyVector(encodedInput)}");
 
                 // Compute the SDR using the Spatial Pooler
-                var lyrOut = layer1.Compute(encodedInput, true) as ComputeCycle;
-                if (lyrOut == null)
+                var activeColumns = layer1.Compute(encodedInput, true) as int[];
+                if (activeColumns == null)
                 {
                     throw new InvalidOperationException("Layer computation returned null.");
                 }
-                Debug.WriteLine($"Layer Output: {lyrOut}");
-
-                // Get the active columns (SDR) from the Spatial Pooler
-                var activeColumns = layer1.GetResult("sp") as int[];
+                Debug.WriteLine($"Active Columns: {Helpers.StringifyVector(activeColumns)}");
 
                 // Combine the active columns into the combined SDR
                 foreach (var column in activeColumns)
@@ -387,7 +380,6 @@ namespace NeoCortexApiSample
 
             return combinedSdr;
         }
-
         private double CosineSimilarity(int[] sdr1, int[] sdr2)
         {
             double dotProduct = 0.0, magnitude1 = 0.0, magnitude2 = 0.0;
