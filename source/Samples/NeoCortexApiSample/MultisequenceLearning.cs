@@ -5,6 +5,7 @@ using NeoCortexApi.Entities;
 using NeoCortexApi.Network;
 using Org.BouncyCastle.Asn1.Tsp;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -345,6 +346,8 @@ namespace NeoCortexApiSample
 
         private int[] GenerateSDR(List<double> sequence, EncoderBase encoder, CortexLayer<object, object> layer1, int inputBits)
         {
+            Debug.WriteLine($"var list1 = new double[] {{ {string.Join(", ", sequence)} }};");
+            var list1 = sequence.Select(x => (double)x).ToArray();
             if (sequence.Count == 0)
                 return new int[inputBits]; // Return an empty SDR for an empty sequence
 
@@ -352,19 +355,23 @@ namespace NeoCortexApiSample
             var combinedSdr = new int[inputBits];
 
             // Iterate through each input in the sequence
-            foreach (var input in sequence)
+            foreach (var input in list1)
             {
                 // Encode the input into an SDR using the encoder
-                var encodedInput = encoder.Encode(input);
+                int[] encodedInput = encoder.Encode(input);
                 if (encodedInput == null)
                 {
                     throw new InvalidOperationException("Encoder returned null.");
                 }
-                Debug.WriteLine($"Encoded Input: {Helpers.StringifyVector(encodedInput)}");
+                Debug.WriteLine($" Encoded Input: {Helpers.StringifyVector(encodedInput)}");
 
                 // Compute the SDR using the Spatial Pooler
                 var lyrOut = layer1.Compute(encodedInput, true) as ComputeCycle;
-
+                if (lyrOut == null)
+                {
+                    throw new InvalidOperationException("Layer computation returned null.");
+                }
+                Debug.WriteLine($"Layer Output: {lyrOut}");
 
                 // Get the active columns (SDR) from the Spatial Pooler
                 var activeColumns = layer1.GetResult("sp") as int[];
