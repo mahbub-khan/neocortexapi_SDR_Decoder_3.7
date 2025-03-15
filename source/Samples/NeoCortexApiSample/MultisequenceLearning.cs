@@ -356,9 +356,15 @@ namespace NeoCortexApiSample
             {
                 // Encode the input into an SDR using the encoder
                 var encodedInput = encoder.Encode(input);
+                if (encodedInput == null)
+                {
+                    throw new InvalidOperationException("Encoder returned null.");
+                }
+                Debug.WriteLine($"Encoded Input: {Helpers.StringifyVector(encodedInput)}");
 
                 // Compute the SDR using the Spatial Pooler
                 var lyrOut = layer1.Compute(encodedInput, true) as ComputeCycle;
+
 
                 // Get the active columns (SDR) from the Spatial Pooler
                 var activeColumns = layer1.GetResult("sp") as int[];
