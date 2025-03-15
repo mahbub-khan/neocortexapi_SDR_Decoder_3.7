@@ -346,8 +346,10 @@ namespace NeoCortexApiSample
 
         private int[] GenerateSDR(List<double> sequence, EncoderBase encoder, CortexLayer<object, object> layer1, int inputBits)
         {
-            Debug.WriteLine($"var list1 = new double[] {{ {string.Join(", ", sequence)} }};");
+            Debug.WriteLine($"sequence= {{ {string.Join(", ", sequence)} }};");
             var list1 = sequence.Select(x => (double)x).ToArray();
+            Debug.WriteLine($" {{ {string.Join(", ", list1)} }};");
+
             if (sequence.Count == 0)
                 return new int[inputBits]; // Return an empty SDR for an empty sequence
 
@@ -358,7 +360,7 @@ namespace NeoCortexApiSample
             foreach (var input in list1)
             {
                 // Encode the input into an SDR using the encoder
-                int[] encodedInput = encoder.Encode(input);
+                var encodedInput = encoder.Encode(input);
                 if (encodedInput == null)
                 {
                     throw new InvalidOperationException("Encoder returned null.");
