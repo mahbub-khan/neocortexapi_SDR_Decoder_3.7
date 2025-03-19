@@ -350,7 +350,7 @@ namespace NeoCortexApiSample
                 return new int[inputBits]; // Return an empty SDR for an empty sequence
 
             // Initialize an array to store the combined SDR
-            var combinedSdr = new int[inputBits];
+            var combinedSdr = new int[1024];
 
             // Iterate through each input in the sequence
             foreach (var input in sequence)
@@ -364,18 +364,20 @@ namespace NeoCortexApiSample
                 Debug.WriteLine($"Encoded Input: {Helpers.StringifyVector(encodedInput)}");
 
                 // Compute the SDR using the Spatial Pooler
-                var activeColumns = layer1.Compute(encodedInput, true) as int[];
+                var lyrOut = layer1.Compute(input, true) as ComputeCycle;
+                var activeColumns = layer1.GetResult("sp") as int[];
                 if (activeColumns == null)
                 {
                     throw new InvalidOperationException("Layer computation returned null.");
                 }
-                Debug.WriteLine($"Active Columns: {Helpers.StringifyVector(activeColumns)}");
+                Debug.WriteLine($"input = {input}   Active Columns: {Helpers.StringifyVector(activeColumns)}");
 
                 // Combine the active columns into the combined SDR
                 foreach (var column in activeColumns)
                 {
                     combinedSdr[column] = 1; // Mark the column as active
                 }
+                Debug.WriteLine($"sequence = {sequence}  combined sdr: {combinedSdr}");
             }
 
             return combinedSdr;
