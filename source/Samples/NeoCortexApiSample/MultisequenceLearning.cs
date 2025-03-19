@@ -137,7 +137,7 @@ namespace NeoCortexApiSample
 
             var lastPredictedValues = new List<string>(new string[] { "0"});
 
-            int maxCycles = 3500;
+            int maxCycles = 3000;
             //int maxCycles = 2000;
 
             //
@@ -338,6 +338,17 @@ namespace NeoCortexApiSample
             var sdr1 = GenerateSDR(sequences["S1"], encoder, layer1, inputBits);
             var sdr2 = GenerateSDR(sequences["S2"], encoder, layer1, inputBits);
 
+            // Merge all SDRs into single binary vectors
+            int[] sdrVector1 = sdr1
+                .Select((value, index) => value == 1 ? index : -1)
+                .Where(index => index != -1)
+                .ToArray();
+
+
+            int[] sdrVector2 = sdr2.Select((value, index) => value == 1 ? index : -1)
+                .Where(index => index != -1)
+                .ToArray();
+
             // Compare SDRs using cosine similarity
             double similarity = CosineSimilarity(sdr1, sdr2);
 
@@ -377,8 +388,9 @@ namespace NeoCortexApiSample
                 {
                     combinedSdr[column] = 1; // Mark the column as active
                 }
-                Debug.WriteLine($"sequence = {sequence}  combined sdr: {combinedSdr}");
+               
             }
+             Debug.WriteLine($"sequence = {{{string.Join(", ", sequence)} }}  combined sdr: {{{string.Join(", ", combinedSdr)} }}");
 
             return combinedSdr;
         }
