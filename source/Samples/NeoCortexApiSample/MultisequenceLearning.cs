@@ -210,10 +210,10 @@ namespace NeoCortexApiSample
                         var lyrOut = layer1.Compute(input, true) as ComputeCycle;
 
                         var activeColumns = layer1.GetResult("sp") as int[];
-                        int[] denseSDR = ConvertSparseToDense(activeColumns, 1024);
+                        //int[] denseSDR = ConvertSparseToDense(activeColumns, 1024);
 
                         // Print the dense SDR
-                        Debug.WriteLine($"Dense SDR: {Helpers.StringifyVector(denseSDR)}");
+                        //Debug.WriteLine($"Dense SDR: {Helpers.StringifyVector(denseSDR)}");
 
                         previousInputs.Add(input.ToString());
                         if (previousInputs.Count > (maxPrevInputs + 1))
@@ -317,7 +317,7 @@ namespace NeoCortexApiSample
             Debug.WriteLine("------------ END ------------");
 
             // Call TrainEmbeddingModel to compare sequences
-            TrainEmbeddingModel(sequences, layer1, 1024, 25);
+            //TrainEmbeddingModel(sequences, layer1, 1024, 25);
 
             return new Predictor(layer1, mem, cls);
         }
@@ -394,12 +394,14 @@ namespace NeoCortexApiSample
                 Debug.WriteLine($"Active Cells: {Helpers.StringifyVector(activeCells)}");
             }
 
-            Debug.WriteLine($"sequence = {{{string.Join(", ", sequence)} }}  combined sdr: {{{string.Join(", ", combinedSdr)} }}");
+            Console.WriteLine($"sequence = {{{string.Join(", ", sequence)} }} /n combined sdr: {{{string.Join(", ", combinedSdr)} }}");
 
             return combinedSdr;
         }
         private double CosineSimilarity(int[] sdr1, int[] sdr2)
         {
+            if (sdr1.Length != sdr2.Length) throw new ArgumentException("SDRs must be of same length");
+
             double dotProduct = 0.0, magnitude1 = 0.0, magnitude2 = 0.0;
             for (int i = 0; i < sdr1.Length; i++)
             {
