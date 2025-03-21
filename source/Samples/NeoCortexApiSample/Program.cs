@@ -179,10 +179,7 @@ namespace NeoCortexApiSample
             List<int> tokens2 = listGeneration.TokenizeText(text2);
 
             List<int> colSDR1 = new List<int>();
-            List<int> cellSDR1 = new List<int>();
-
             List<int> colSDR2 = new List<int>();
-            List<int> cellSDR2 = new List<int>();
 
             // Retrieve stored SDRs for each token
             foreach (var token in tokens1)
@@ -191,7 +188,7 @@ namespace NeoCortexApiSample
                 if (storedSDR.HasValue)
                 {
                     colSDR1.AddRange(storedSDR.Value.columnSDR);
-                    cellSDR1.AddRange(storedSDR.Value.cellSDR);
+                   
                 }
             }
 
@@ -201,41 +198,40 @@ namespace NeoCortexApiSample
                 if (storedSDR.HasValue)
                 {
                     colSDR2.AddRange(storedSDR.Value.columnSDR);
-                    cellSDR2.AddRange(storedSDR.Value.cellSDR);
+                    
                 }
             }
 
             if (colSDR1.Count > 0 && colSDR2.Count > 0)
             {
                 double colSimilarity = CosineSimilarity(colSDR1.ToArray(), colSDR2.ToArray());
-                Console.WriteLine($"Column SDR Cosine Similarity: {colSimilarity}");
+                Console.WriteLine($"Column SDR Cosine Similarity for '{text1}' and  '{text2}' : {colSimilarity}");
             }
             else
             {
                 Console.WriteLine("No matching Column SDRs found for comparison.");
             }
 
-            if (cellSDR1.Count > 0 && cellSDR2.Count > 0)
-            {
-                double cellSimilarity = CosineSimilarity(cellSDR1.ToArray(), cellSDR2.ToArray());
-                Console.WriteLine($"Cell SDR Cosine Similarity: {cellSimilarity}");
-            }
-            else
-            {
-                Console.WriteLine("No matching Cell SDRs found for comparison.");
-            }
+         
         }
 
         public static double CosineSimilarity(int[] vec1, int[] vec2)
         {
-            if (vec1.Length != vec2.Length) return 0.0;
+            if (vec1.Length == 0 || vec2.Length == 0)
+                return 0.0;
 
-            double dotProduct = vec1.Zip(vec2, (a, b) => a * b).Sum();
-            double magnitude1 = Math.Sqrt(vec1.Sum(x => x * x));
-            double magnitude2 = Math.Sqrt(vec2.Sum(x => x * x));
+            // Convert to dense binary vectors
+            HashSet<int> set1 = new HashSet<int>(vec1);
+            HashSet<int> set2 = new HashSet<int>(vec2);
 
-            return (magnitude1 == 0 || magnitude2 == 0) ? 0 : dotProduct / (magnitude1 * magnitude2);
+            // Compute dot product and magnitudes
+            double dotProduct = set1.Intersect(set2).Count();
+            double magnitude1 = Math.Sqrt(set1.Count);
+            double magnitude2 = Math.Sqrt(set2.Count);
+
+            return (magnitude1 == 0 || magnitude2 == 0) ? 0.0 : dotProduct / (magnitude1 * magnitude2);
         }
+
 
         private static void PredictNextElement(Predictor predictor, double[] list)
         {
