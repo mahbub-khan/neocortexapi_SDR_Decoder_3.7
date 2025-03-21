@@ -48,7 +48,7 @@ class Program
 
         
                 // Prompt the user for input
-                Console.WriteLine("Enter some text: ");
+                Console.WriteLine("Enter a sub-sequence of the source text: ");
                 string userInput1 = Console.ReadLine(); // Take runtime input from the user
 
                 // Pass the input to a method for processing
@@ -70,7 +70,7 @@ class Program
                 //}
 
                 // Prompt the user for another input
-                Console.WriteLine("Enter another text: ");
+                Console.WriteLine("Enter text for comaprison: ");
                 string userInput2 = Console.ReadLine(); // Take runtime input from the user
 
                 // Pass the input to a method for processing
