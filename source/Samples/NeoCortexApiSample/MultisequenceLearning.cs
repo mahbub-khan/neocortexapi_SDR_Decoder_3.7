@@ -317,7 +317,7 @@ namespace NeoCortexApiSample
             Debug.WriteLine("------------ END ------------");
 
             // Call TrainEmbeddingModel to compare sequences
-            TrainEmbeddingModel(sequences, encoder, layer1, inputBits);
+            TrainEmbeddingModel(sequences, layer1, 1024);
 
             return new Predictor(layer1, mem, cls);
         }
@@ -332,11 +332,11 @@ namespace NeoCortexApiSample
             return denseVector;
         }
 
-        public void TrainEmbeddingModel(Dictionary<string, List<double>> sequences, EncoderBase encoder, CortexLayer<object, object> layer1, int inputBits)
+        public void TrainEmbeddingModel(Dictionary<string, List<double>> sequences, CortexLayer<object, object> layer1, int numColumns)
         {
             // Generate SDRs for subsequences
-            var sdr1 = GenerateSDR(sequences["S1"], encoder, layer1, inputBits);
-            var sdr2 = GenerateSDR(sequences["S2"], encoder, layer1, inputBits);
+            var sdr1 = GenerateSDR(sequences["S1"],  layer1, numColumns);
+            var sdr2 = GenerateSDR(sequences["S2"], layer1, numColumns);
 
             // Merge all SDRs into single binary vectors
             int[] sdrVector1 = sdr1
@@ -355,10 +355,10 @@ namespace NeoCortexApiSample
             Console.WriteLine($"Similarity between Sequence1 and Sequence2: {similarity}");
         }
 
-        private int[] GenerateSDR(List<double> sequence, EncoderBase encoder, CortexLayer<object, object> layer1, int inputBits)
+        private int[] GenerateSDR(List<double> sequence, CortexLayer<object, object> layer1, int numColumns)
         {
             if (sequence.Count == 0)
-                return new int[inputBits]; // Return an empty SDR for an empty sequence
+                return new int[numColumns]; // Return an empty SDR for an empty sequence
 
             // Initialize an array to store the combined SDR
             var combinedSdr = new int[1024];
@@ -366,16 +366,9 @@ namespace NeoCortexApiSample
             // Iterate through each input in the sequence
             foreach (var input in sequence)
             {
-                // Encode the input into an SDR using the encoder
-                var encodedInput = encoder.Encode(input);
-                if (encodedInput == null)
-                {
-                    throw new InvalidOperationException("Encoder returned null.");
-                }
-                Debug.WriteLine($"Encoded Input: {Helpers.StringifyVector(encodedInput)}");
 
                 // Compute the SDR using the Spatial Pooler
-                var lyrOut = layer1.Compute(input, true) as ComputeCycle;
+                var lyrOut = layer1.Compute(input, false) as ComputeCycle;
                 var activeColumns = layer1.GetResult("sp") as int[];
                 if (activeColumns == null)
                 {
