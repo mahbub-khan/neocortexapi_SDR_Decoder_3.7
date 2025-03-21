@@ -89,7 +89,7 @@ namespace NeoCortexApiSample
 
             // Store in a dictionary with a key like "S1"
             Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
-            //sequences.Add("S1", new List<double>(doubleList));
+            sequences.Add("S1", new List<double>(doubleList));
 
             // Print to verify the sequence
             // Console.WriteLine("Generated Sequence:");
@@ -103,8 +103,8 @@ namespace NeoCortexApiSample
             //sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 5.0, 4.0, 3.0, 7.0, 1.0, 9.0, 12.0, 11.0, 12.0, 13.0, 14.0, 11.0, 12.0, 14.0, 5.0, 7.0, 6.0, 9.0, 3.0, 4.0, 3.0, 4.0, 3.0, 4.0 }));
             //sequences.Add("S2", new List<double>(new double[] { 0.8, 2.0, 0.0, 3.0, 3.0, 4.0, 5.0, 6.0, 5.0, 7.0, 2.0, 7.0, 1.0, 9.0, 11.0, 11.0, 10.0, 13.0, 14.0, 11.0, 7.0, 6.0, 5.0, 7.0, 6.0, 5.0, 3.0, 2.0, 3.0, 4.0, 3.0, 4.0 }));
 
-            sequences.Add("S1", new List<double>(new double[] { 1045.0, 2572.0, 1037.0, 2388.0, 2021.0, 1045.0, 2572.0, 2036.0, 1037.0, 2684.0, 1998.0, 1037.0, 2905.0 }));
-            sequences.Add("S2", new List<double>(new double[] { 2036.0, 1037.0, 2684.0, 1998.0, 1037.0, 2905.0 }));
+            //sequences.Add("S1", new List<double>(new double[] { 1045.0, 2572.0, 1037.0, 2388.0, 2021.0, 1045.0, 2572.0, 2036.0, 1037.0, 2684.0, 1998.0, 1037.0, 2905.0 }));
+            //sequences.Add("S2", new List<double>(new double[] { 2036.0, 1037.0, 2684.0, 1998.0, 1037.0, 2905.0 }));
 
 
             //sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 5.0, 2.0, 3.0, 7.0, 1.0, 9.0, 12.0, 11.0, 12.0, 13.0, 14.0, 11.0, 12.0 }));
@@ -132,23 +132,20 @@ namespace NeoCortexApiSample
             var predictor = experiment.Run(sequences);
 
 
-            //Prompt for taking user input as a text sequence
-            Console.WriteLine("Enter some text: ");
-            string input = Console.ReadLine(); // Take runtime input from the user
+            Console.WriteLine("Enter first text sequence: ");
+            string input1 = Console.ReadLine();
 
-            // Pass the input to a method for processing
-            List<int> processedText = list_Generation.TokenizeText(input);
+            Console.WriteLine("Enter second text sequence: ");
+            string input2 = Console.ReadLine();
+
+            CompareTextSequences(input1, input2);
+
 
             //
             // These list are used to see how the prediction works.
             // Predictor is traversing the list element by element. 
             // By providing more elements to the prediction, the predictor delivers more precise result
 
-            // Convert the processed list to an array of doubles
-            var list1 = processedText.Select(x => (double)x).ToArray();
-
-            // Print the array 
-            Console.WriteLine($"var list1 = new double[] {{ {string.Join(", ", list1)} }};");
 
             //var list1 = new double[] { 1.0, 2.0, 3.0, 4.0, 2.0, 5.0 };
             //var list2 = new double[] { 2.0, 3.0, 4.0 };
@@ -163,13 +160,81 @@ namespace NeoCortexApiSample
             // var list3 = new double[] { 13.0, 17.0, 11.0 };
 
             predictor.Reset();
-            PredictNextElement(predictor, list1);
+            //PredictNextElement(predictor, list1);
 
             //predictor.Reset();
             //PredictNextElement(predictor, list2);
 
             //predictor.Reset();
             //PredictNextElement(predictor, list3);
+        }
+
+        private static void CompareTextSequences(string text1, string text2)
+        {
+            SDRStorage sdrStorage = new SDRStorage();
+            List_Generation listGeneration = new List_Generation();
+
+            // Tokenize both text sequences
+            List<int> tokens1 = listGeneration.TokenizeText(text1);
+            List<int> tokens2 = listGeneration.TokenizeText(text2);
+
+            List<int> colSDR1 = new List<int>();
+            List<int> cellSDR1 = new List<int>();
+
+            List<int> colSDR2 = new List<int>();
+            List<int> cellSDR2 = new List<int>();
+
+            // Retrieve stored SDRs for each token
+            foreach (var token in tokens1)
+            {
+                var storedSDR = sdrStorage.LoadSDR(token.ToString());
+                if (storedSDR.HasValue)
+                {
+                    colSDR1.AddRange(storedSDR.Value.columnSDR);
+                    cellSDR1.AddRange(storedSDR.Value.cellSDR);
+                }
+            }
+
+            foreach (var token in tokens2)
+            {
+                var storedSDR = sdrStorage.LoadSDR(token.ToString());
+                if (storedSDR.HasValue)
+                {
+                    colSDR2.AddRange(storedSDR.Value.columnSDR);
+                    cellSDR2.AddRange(storedSDR.Value.cellSDR);
+                }
+            }
+
+            if (colSDR1.Count > 0 && colSDR2.Count > 0)
+            {
+                double colSimilarity = CosineSimilarity(colSDR1.ToArray(), colSDR2.ToArray());
+                Console.WriteLine($"Column SDR Cosine Similarity: {colSimilarity}");
+            }
+            else
+            {
+                Console.WriteLine("No matching Column SDRs found for comparison.");
+            }
+
+            if (cellSDR1.Count > 0 && cellSDR2.Count > 0)
+            {
+                double cellSimilarity = CosineSimilarity(cellSDR1.ToArray(), cellSDR2.ToArray());
+                Console.WriteLine($"Cell SDR Cosine Similarity: {cellSimilarity}");
+            }
+            else
+            {
+                Console.WriteLine("No matching Cell SDRs found for comparison.");
+            }
+        }
+
+        public static double CosineSimilarity(int[] vec1, int[] vec2)
+        {
+            if (vec1.Length != vec2.Length) return 0.0;
+
+            double dotProduct = vec1.Zip(vec2, (a, b) => a * b).Sum();
+            double magnitude1 = Math.Sqrt(vec1.Sum(x => x * x));
+            double magnitude2 = Math.Sqrt(vec2.Sum(x => x * x));
+
+            return (magnitude1 == 0 || magnitude2 == 0) ? 0 : dotProduct / (magnitude1 * magnitude2);
         }
 
         private static void PredictNextElement(Predictor predictor, double[] list)

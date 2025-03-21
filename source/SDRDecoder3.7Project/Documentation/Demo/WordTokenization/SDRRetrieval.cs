@@ -91,7 +91,7 @@ namespace WordTokenization
                 else
                 {
                     Console.WriteLine($"Warning: SDR not found for Token ID {tokenId}");  // Print warning if SDR is missing
-                    resultSDRs[tokenId] = new int[100]; // Return an empty SDR vector of the same size
+                    //resultSDRs[tokenId] = new int[100]; // Return an empty SDR vector of the same size
                 }
             }
             return resultSDRs;  // Return dictionary containing retrieved SDRs

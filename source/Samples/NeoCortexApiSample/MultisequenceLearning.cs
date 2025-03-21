@@ -177,6 +177,7 @@ namespace NeoCortexApiSample
 
             //
             // Loop over all sequences.
+            SDRStorage sdrStorage = new SDRStorage();
             foreach (var sequenceKeyPair in sequences)
             {
                 Debug.WriteLine($"-------------- Sequences {sequenceKeyPair.Key} ---------------");
@@ -241,10 +242,13 @@ namespace NeoCortexApiSample
                         }
 
                         cls.Learn(key, actCells.ToArray());
-                        
 
+                        int[] cellSDR = actCells.Select(c => c.Index).ToArray();
                         Debug.WriteLine($"Col  SDR: {Helpers.StringifyVector(lyrOut.ActivColumnIndicies)}");
                         Debug.WriteLine($"Cell SDR: {Helpers.StringifyVector(actCells.Select(c => c.Index).ToArray())}");
+
+                        // Save the SDR for this token/input
+                        sdrStorage.SaveSDR(input.ToString(), activeColumns, cellSDR);
 
                         //
                         // If the list of predicted values from the previous step contains the currently presenting value,
