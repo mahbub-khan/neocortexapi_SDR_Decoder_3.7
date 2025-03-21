@@ -317,7 +317,7 @@ namespace NeoCortexApiSample
             Debug.WriteLine("------------ END ------------");
 
             // Call TrainEmbeddingModel to compare sequences
-            TrainEmbeddingModel(sequences, layer1, 1024);
+            TrainEmbeddingModel(sequences, layer1, 1024, 25);
 
             return new Predictor(layer1, mem, cls);
         }
@@ -332,11 +332,11 @@ namespace NeoCortexApiSample
             return denseVector;
         }
 
-        public void TrainEmbeddingModel(Dictionary<string, List<double>> sequences, CortexLayer<object, object> layer1, int numColumns)
+        public void TrainEmbeddingModel(Dictionary<string, List<double>> sequences, CortexLayer<object, object> layer1, int numColumns, int CellsPerColumn)
         {
             // Generate SDRs for subsequences
-            var sdr1 = GenerateSDR(sequences["S1"],  layer1, numColumns);
-            var sdr2 = GenerateSDR(sequences["S2"], layer1, numColumns);
+            var sdr1 = GenerateSDR(sequences["S1"],  layer1, numColumns, CellsPerColumn);
+            var sdr2 = GenerateSDR(sequences["S2"], layer1, numColumns, CellsPerColumn);
 
             // Merge all SDRs into single binary vectors
             int[] sdrVector1 = sdr1
@@ -355,35 +355,46 @@ namespace NeoCortexApiSample
             Console.WriteLine($"Similarity between Sequence1 and Sequence2: {similarity}");
         }
 
-        private int[] GenerateSDR(List<double> sequence, CortexLayer<object, object> layer1, int numColumns)
+        private int[] GenerateSDR(List<double> sequence, CortexLayer<object, object> layer1, int numColumns, int CellsPerColumn)
         {
             if (sequence.Count == 0)
                 return new int[numColumns]; // Return an empty SDR for an empty sequence
 
             // Initialize an array to store the combined SDR
-            var combinedSdr = new int[1024];
+            var combinedSdr = new int[numColumns * CellsPerColumn];
 
             // Iterate through each input in the sequence
             foreach (var input in sequence)
             {
-
-                // Compute the SDR using the Spatial Pooler
+                // Compute the SDR using the Spatial Pooler and Temporal Memory
                 var lyrOut = layer1.Compute(input, false) as ComputeCycle;
+
+                // Get active columns from Spatial Pooler
                 var activeColumns = layer1.GetResult("sp") as int[];
                 if (activeColumns == null)
                 {
                     throw new InvalidOperationException("Layer computation returned null.");
                 }
-                Debug.WriteLine($"input = {input}   Active Columns: {Helpers.StringifyVector(activeColumns)}");
 
-                // Combine the active columns into the combined SDR
+                // Get active cells from Temporal Memory
+                var activeCells = lyrOut.ActiveCells.Select(c => c.Index).ToArray();
+
+                // Combine active columns and cells into the combined SDR
                 foreach (var column in activeColumns)
                 {
                     combinedSdr[column] = 1; // Mark the column as active
                 }
-               
+
+                foreach (var cell in activeCells)
+                {
+                    combinedSdr[cell] = 1; // Mark the cell as active
+                }
+
+                Debug.WriteLine($"input = {input}   Active Columns: {Helpers.StringifyVector(activeColumns)}");
+                Debug.WriteLine($"Active Cells: {Helpers.StringifyVector(activeCells)}");
             }
-             Debug.WriteLine($"sequence = {{{string.Join(", ", sequence)} }}  combined sdr: {{{string.Join(", ", combinedSdr)} }}");
+
+            Debug.WriteLine($"sequence = {{{string.Join(", ", sequence)} }}  combined sdr: {{{string.Join(", ", combinedSdr)} }}");
 
             return combinedSdr;
         }
