@@ -35,7 +35,7 @@ class Program
         sequences.Add("S1", new List<double>(doubleList));
 
         // Print to verify
-        Console.WriteLine("Generated Sequence:");
+        Console.WriteLine("\nGenerated Sequence:");
         Console.WriteLine($"sequences.Add(\"S1\", new List<double>(new double[] {{ {string.Join(", ", doubleList)} }}));");
 
 
@@ -48,7 +48,7 @@ class Program
 
         
                 // Prompt the user for input
-                Console.WriteLine("Enter a sub-sequence of the source text: ");
+                Console.WriteLine("\nEnter a sub-sequence of the source text: ");
                 string userInput1 = Console.ReadLine(); // Take runtime input from the user
 
                 // Pass the input to a method for processing
@@ -70,7 +70,7 @@ class Program
                 //}
 
                 // Prompt the user for another input
-                Console.WriteLine("Enter text for comaprison: ");
+                Console.WriteLine("\nEnter text for comaprison: ");
                 string userInput2 = Console.ReadLine(); // Take runtime input from the user
 
                 // Pass the input to a method for processing
@@ -110,19 +110,16 @@ class Program
                 // Display the result
                 Console.WriteLine($"\nCosine Similarity: {Cos_similarity:0.00} \nEuclidean Similarity: {Euclid_similarity:0.00}");
 
-
-        
-
     }
 
 
     public static void DebugSDRs(int[] mergedSDR1, int[] mergedSDR2)
     {
-        Console.WriteLine("Sparse Merged SDR 1: " + string.Join(", ", mergedSDR1));
-        Console.WriteLine("Sparse Merged SDR 2: " + string.Join(", ", mergedSDR2));
+        Console.WriteLine("\nSparse Merged SDR of subsequenceText : " + string.Join(", ", mergedSDR1));
+        Console.WriteLine("Sparse Merged SDR of comparisonText: " + string.Join(", ", mergedSDR2));
         Console.WriteLine("Common SDRs: " + string.Join(", ", mergedSDR1.Intersect(mergedSDR2)));
-        Console.WriteLine("Total Active Bits in SDR 1: " + mergedSDR1.Length);
-        Console.WriteLine("Total Active Bits in SDR 2: " + mergedSDR2.Length);
+        Console.WriteLine("Total Active Bits in subsequenceText SDR: " + mergedSDR1.Length);
+        Console.WriteLine("Total Active Bits in comparisonText: " + mergedSDR2.Length);
         Console.WriteLine("Common Active Bits: " + mergedSDR1.Intersect(mergedSDR2).Count());
 
     }
