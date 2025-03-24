@@ -128,9 +128,10 @@ namespace NeoCortexApiSample
 
             //
             // Prototype for building the prediction engine.
-            MultiSequenceLearning experiment = new MultiSequenceLearning();
-            var predictor = experiment.Run(sequences);
-
+            //MultiSequenceLearning experiment = new MultiSequenceLearning();
+            //var predictor = experiment.Run(sequences);
+            SemanticSimilarityLearning experiment = new SemanticSimilarityLearning();
+            experiment.Run(sequences);
 
             Console.WriteLine("Enter first text sequence: ");
             string input1 = Console.ReadLine();
@@ -138,7 +139,7 @@ namespace NeoCortexApiSample
             Console.WriteLine("Enter second text sequence: ");
             string input2 = Console.ReadLine();
 
-            CompareTextSequences(input1, input2);
+            CompareTextSequences(input1, input2, 1024,25);
 
 
             //
@@ -159,7 +160,7 @@ namespace NeoCortexApiSample
             // var list2 = new double[] { 12.0, 13.0, 17.0, 1.0, 9.0, 2.0 };
             // var list3 = new double[] { 13.0, 17.0, 11.0 };
 
-            predictor.Reset();
+            //predictor.Reset();
             //PredictNextElement(predictor, list1);
 
             //predictor.Reset();
@@ -169,7 +170,7 @@ namespace NeoCortexApiSample
             //PredictNextElement(predictor, list3);
         }
 
-        private static void CompareTextSequences(string text1, string text2)
+        private static void CompareTextSequences(string text1, string text2, int numColumns, int numCellsPerColumn)
         {
             SDRStorage sdrStorage = new SDRStorage();
             List_Generation listGeneration = new List_Generation();
@@ -178,17 +179,23 @@ namespace NeoCortexApiSample
             List<int> tokens1 = listGeneration.TokenizeText(text1);
             List<int> tokens2 = listGeneration.TokenizeText(text2);
 
-            List<int> colSDR1 = new List<int>();
-            List<int> colSDR2 = new List<int>();
+            // Lists to store binary SDRs for each subsequence
+            List<int> binarySDR1 = new List<int>();
+            List<int> binarySDR2 = new List<int>();
 
-            // Retrieve stored SDRs for each token
+            // Retrieve stored SDRs for each token and convert to binary SDRs
             foreach (var token in tokens1)
             {
                 var storedSDR = sdrStorage.LoadSDR(token.ToString());
                 if (storedSDR.HasValue)
                 {
-                    colSDR1.AddRange(storedSDR.Value.columnSDR);
-                   
+                    // Convert column SDR to binary
+                    int[] columnBinary = ConvertToBinarySDR(storedSDR.Value.columnSDR, numColumns);
+                    binarySDR1.AddRange(columnBinary);
+
+                    // Convert cell SDR to binary
+                    int[] cellBinary = ConvertToBinarySDR(storedSDR.Value.cellSDR, numColumns * numCellsPerColumn);
+                    binarySDR1.AddRange(cellBinary);
                 }
             }
 
@@ -197,38 +204,58 @@ namespace NeoCortexApiSample
                 var storedSDR = sdrStorage.LoadSDR(token.ToString());
                 if (storedSDR.HasValue)
                 {
-                    colSDR2.AddRange(storedSDR.Value.columnSDR);
-                    
+                    // Convert column SDR to binary
+                    int[] columnBinary = ConvertToBinarySDR(storedSDR.Value.columnSDR, numColumns);
+                    binarySDR2.AddRange(columnBinary);
+
+                    // Convert cell SDR to binary
+                    int[] cellBinary = ConvertToBinarySDR(storedSDR.Value.cellSDR, numColumns * numCellsPerColumn);
+                    binarySDR2.AddRange(cellBinary);
                 }
             }
 
-            if (colSDR1.Count > 0 && colSDR2.Count > 0)
+            // Calculate cosine similarity
+            if (binarySDR1.Count > 0 && binarySDR2.Count > 0)
             {
-                double colSimilarity = CosineSimilarity(colSDR1.ToArray(), colSDR2.ToArray());
-                Console.WriteLine($"Column SDR Cosine Similarity for '{text1}' and  '{text2}' : {colSimilarity}");
+                double similarity = CosineSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray());
+                Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {similarity}");
             }
             else
             {
-                Console.WriteLine("No matching Column SDRs found for comparison.");
+                Console.WriteLine("No matching SDRs found for comparison.");
             }
-
-         
         }
 
-        public static double CosineSimilarity(int[] vec1, int[] vec2)
+        /// <summary>
+        /// Converts a list of active indices into a binary SDR vector.
+        /// </summary>
+        /// <param name="activeIndices">List of active indices (e.g., [10, 12, 25]).</param>
+        /// <param name="totalSize">Total size of the binary vector (e.g., number of columns or cells).</param>
+        /// <returns>A binary vector with 1s at active indices and 0s elsewhere.</returns>
+        private static int[] ConvertToBinarySDR(int[] activeIndices, int totalSize)
         {
-            if (vec1.Length == 0 || vec2.Length == 0)
-                return 0.0;
+            int[] binarySDR = new int[totalSize];
+            foreach (int index in activeIndices)
+            {
+                if (index < totalSize)
+                {
+                    binarySDR[index] = 1;
+                }
+            }
+            return binarySDR;
+        }
 
-            // Convert to dense binary vectors
-            HashSet<int> set1 = new HashSet<int>(vec1);
-            HashSet<int> set2 = new HashSet<int>(vec2);
-
-            // Compute dot product and magnitudes
-            double dotProduct = set1.Intersect(set2).Count();
-            double magnitude1 = Math.Sqrt(set1.Count);
-            double magnitude2 = Math.Sqrt(set2.Count);
-
+        /// <summary>
+        /// Calculates the cosine similarity between two binary SDR vectors.
+        /// </summary>
+        /// <param name="vector1">First binary SDR vector.</param>
+        /// <param name="vector2">Second binary SDR vector.</param>
+        /// <returns>The cosine similarity between the two vectors (ranges from -1 to 1).</returns>
+        public static double CosineSimilarity(int[] vector1, int[] vector2)
+        {
+            double dotProduct = vector1.Zip(vector2, (v1, v2) => v1 * v2).Sum();
+            double magnitude1 = Math.Sqrt(vector1.Sum(v => v * v));
+            double magnitude2 = Math.Sqrt(vector2.Sum(v => v * v));
             return (magnitude1 == 0 || magnitude2 == 0) ? 0.0 : dotProduct / (magnitude1 * magnitude2);
         }
 

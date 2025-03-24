@@ -22,10 +22,9 @@ namespace NeoCortexApiSample
 
         public void SaveSDR(string input, int[] columnSDR, int[] cellSDR)
         {
-            // Clear the dictionary to remove old values
-            savedSDRs.Clear();
-
+            // Add or update the SDR entry for the given input
             savedSDRs[input] = (columnSDR, cellSDR);
+            // Write the updated dictionary back to the JSON file
             File.WriteAllText(filePath, JsonConvert.SerializeObject(savedSDRs, Formatting.Indented));
         }
 
@@ -39,7 +38,7 @@ namespace NeoCortexApiSample
         {
             if (!File.Exists(filePath)) return null;
 
-            savedSDRs = JsonConvert.DeserializeObject<Dictionary<string, (int[], int[])>>(File.ReadAllText(filePath));
+            savedSDRs = JsonConvert.DeserializeObject<Dictionary<string, (int[] columnSDR, int[] cellSDR)>>(File.ReadAllText(filePath));
             return savedSDRs.ContainsKey(input) ? savedSDRs[input] : null;
         }
     }

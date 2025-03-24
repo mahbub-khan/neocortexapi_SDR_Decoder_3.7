@@ -58,8 +58,8 @@ namespace NeoCortexApiSample
             };
 
             //double max = 1303;
-            double max = 4000;
-
+            double max = sequences.Values.SelectMany(list => list).Max(); //BERT's vocab size is 30,522
+            Console.WriteLine($"max value : {max}");
             Dictionary<string, object> settings = new Dictionary<string, object>()
             {
                 { "W", 15},
@@ -137,8 +137,8 @@ namespace NeoCortexApiSample
 
             var lastPredictedValues = new List<string>(new string[] { "0"});
 
-            int maxCycles = 3000;
-            //int maxCycles = 2000;
+            //int maxCycles = 3000;
+            int maxCycles = 2000;
 
             //
             // Training SP to get stable. New-born stage.
@@ -211,11 +211,7 @@ namespace NeoCortexApiSample
                         var lyrOut = layer1.Compute(input, true) as ComputeCycle;
 
                         var activeColumns = layer1.GetResult("sp") as int[];
-                        //int[] denseSDR = ConvertSparseToDense(activeColumns, 1024);
-
-                        // Print the dense SDR
-                        //Debug.WriteLine($"Dense SDR: {Helpers.StringifyVector(denseSDR)}");
-
+                        
                         previousInputs.Add(input.ToString());
                         if (previousInputs.Count > (maxPrevInputs + 1))
                             previousInputs.RemoveAt(0);
@@ -256,10 +252,10 @@ namespace NeoCortexApiSample
                         if (lastPredictedValues.Contains(key))
                         {
                             matches++;
-                            Debug.WriteLine($"Match. Actual value: {key} - Predicted value: {lastPredictedValues.FirstOrDefault(key)}.");
+                            //Debug.WriteLine($"Match. Actual value: {key} - Predicted value: {lastPredictedValues.FirstOrDefault(key)}.");
                         }
                         else
-                            Debug.WriteLine($"Missmatch! Actual value: {key} - Predicted values: {String.Join(',', lastPredictedValues)}");
+                            //Debug.WriteLine($"Missmatch! Actual value: {key} - Predicted values: {String.Join(',', lastPredictedValues)}");
 
                         if (lyrOut.PredictiveCells.Count > 0)
                         {
@@ -268,14 +264,14 @@ namespace NeoCortexApiSample
 
                             foreach (var item in predictedInputValues)
                             {
-                                Debug.WriteLine($"Current Input: {input} \t| Predicted Input: {item.PredictedInput} - {item.Similarity}");
+                                //Debug.WriteLine($"Current Input: {input} \t| Predicted Input: {item.PredictedInput} - {item.Similarity}");
                             }
 
                             lastPredictedValues = predictedInputValues.Select(v=>v.PredictedInput).ToList();
                         }
                         else
                         {
-                            Debug.WriteLine($"NO CELLS PREDICTED for next cycle.");
+                            //Debug.WriteLine($"NO CELLS PREDICTED for next cycle.");
                             lastPredictedValues = new List<string> ();
                         }
                     }
@@ -285,7 +281,7 @@ namespace NeoCortexApiSample
 
                     double accuracy = (double)matches / (double)sequenceKeyPair.Value.Count * 100.0;
 
-                    Debug.WriteLine($"Cycle: {cycle}\tMatches={matches} of {sequenceKeyPair.Value.Count}\t {accuracy}%");
+                    //Debug.WriteLine($"Cycle: {cycle}\tMatches={matches} of {sequenceKeyPair.Value.Count}\t {accuracy}%");
 
                     //Debug.WriteLine($"Loop: {i}\tCycle: {cycle}\tMatches={matches} of {sequenceKeyPair.Value.Count}\t {accuracy}%");
 
@@ -320,104 +316,8 @@ namespace NeoCortexApiSample
 
             Debug.WriteLine("------------ END ------------");
 
-            // Call TrainEmbeddingModel to compare sequences
-            //TrainEmbeddingModel(sequences, layer1, 1024, 25);
-
             return new Predictor(layer1, mem, cls);
         }
-
-        private int[] ConvertSparseToDense(int[] sparseIndices, int numColumns)
-        {
-            int[] denseVector = new int[numColumns]; // Initialize a vector of zeros
-            foreach (var index in sparseIndices)
-            {
-                denseVector[index] = 1; // Set active columns to 1
-            }
-            return denseVector;
-        }
-
-        public void TrainEmbeddingModel(Dictionary<string, List<double>> sequences, CortexLayer<object, object> layer1, int numColumns, int CellsPerColumn)
-        {
-            // Generate SDRs for subsequences
-            var sdr1 = GenerateSDR(sequences["S1"],  layer1, numColumns, CellsPerColumn);
-            var sdr2 = GenerateSDR(sequences["S2"], layer1, numColumns, CellsPerColumn);
-
-            // Merge all SDRs into single binary vectors
-            int[] sdrVector1 = sdr1
-                .Select((value, index) => value == 1 ? index : -1)
-                .Where(index => index != -1)
-                .ToArray();
-
-
-            int[] sdrVector2 = sdr2.Select((value, index) => value == 1 ? index : -1)
-                .Where(index => index != -1)
-                .ToArray();
-
-            // Compare SDRs using cosine similarity
-            double similarity = CosineSimilarity(sdr1, sdr2);
-
-            Console.WriteLine($"Similarity between Sequence1 and Sequence2: {similarity}");
-        }
-
-        private int[] GenerateSDR(List<double> sequence, CortexLayer<object, object> layer1, int numColumns, int CellsPerColumn)
-        {
-            if (sequence.Count == 0)
-                return new int[numColumns]; // Return an empty SDR for an empty sequence
-
-            // Initialize an array to store the combined SDR
-            var combinedSdr = new int[numColumns * CellsPerColumn];
-
-            // Iterate through each input in the sequence
-            foreach (var input in sequence)
-            {
-                // Compute the SDR using the Spatial Pooler and Temporal Memory
-                var lyrOut = layer1.Compute(input, false) as ComputeCycle;
-
-                // Get active columns from Spatial Pooler
-                var activeColumns = layer1.GetResult("sp") as int[];
-                if (activeColumns == null)
-                {
-                    throw new InvalidOperationException("Layer computation returned null.");
-                }
-
-                // Get active cells from Temporal Memory
-                var activeCells = lyrOut.ActiveCells.Select(c => c.Index).ToArray();
-
-                // Combine active columns and cells into the combined SDR
-                foreach (var column in activeColumns)
-                {
-                    combinedSdr[column] = 1; // Mark the column as active
-                }
-
-                foreach (var cell in activeCells)
-                {
-                    combinedSdr[cell] = 1; // Mark the cell as active
-                }
-
-                Debug.WriteLine($"input = {input}   Active Columns: {Helpers.StringifyVector(activeColumns)}");
-                Debug.WriteLine($"Active Cells: {Helpers.StringifyVector(activeCells)}");
-            }
-
-            Console.WriteLine($"sequence = {{{string.Join(", ", sequence)} }} /n combined sdr: {{{string.Join(", ", combinedSdr)} }}");
-
-            return combinedSdr;
-        }
-        private double CosineSimilarity(int[] sdr1, int[] sdr2)
-        {
-            if (sdr1.Length != sdr2.Length) throw new ArgumentException("SDRs must be of same length");
-
-            double dotProduct = 0.0, magnitude1 = 0.0, magnitude2 = 0.0;
-            for (int i = 0; i < sdr1.Length; i++)
-            {
-                dotProduct += sdr1[i] * sdr2[i];
-                magnitude1 += Math.Pow(sdr1[i], 2);
-                magnitude2 += Math.Pow(sdr2[i], 2);
-            }
-            magnitude1 = Math.Sqrt(magnitude1);
-            magnitude2 = Math.Sqrt(magnitude2);
-            return dotProduct / (magnitude1 * magnitude2);
-        }
-
 
         /// <summary>
         /// Gets the number of all unique inputs.
