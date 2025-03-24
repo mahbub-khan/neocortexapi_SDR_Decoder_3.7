@@ -91,11 +91,6 @@ namespace NeoCortexApiSample
             Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
             sequences.Add("S1", new List<double>(doubleList));
 
-            // Print to verify the sequence
-            // Console.WriteLine("Generated Sequence:");
-            //Console.WriteLine($"sequences.Add(\"S1\", new List<double>(new double[] {{ {string.Join(", ", doubleList)} }}));");
-
-
 
            // sequences.Add("S1", new List<double>(new double[] { 1.0, 2.0, 3.0, 4.0 }));
            // sequences.Add("S2", new List<double>(new double[] { 5.0, 6.0, 7.0, 8.0 }));
@@ -130,6 +125,7 @@ namespace NeoCortexApiSample
             // Prototype for building the prediction engine.
             //MultiSequenceLearning experiment = new MultiSequenceLearning();
             //var predictor = experiment.Run(sequences);
+
             SemanticSimilarityLearning experiment = new SemanticSimilarityLearning();
             experiment.Run(sequences);
 
@@ -170,6 +166,15 @@ namespace NeoCortexApiSample
             //PredictNextElement(predictor, list3);
         }
 
+
+        /// <summary>
+        /// Compares two text sequences by converting them into Sparse Distributed Representations (SDRs) 
+        /// and calculating their cosine similarity.
+        /// </summary>
+        /// <param name="text1">The first input text sequence.</param>
+        /// <param name="text2">The second input text sequence.</param>
+        /// <param name="numColumns">The number of columns used in SDR encoding.</param>
+        /// <param name="numCellsPerColumn">The number of cells per column in SDR encoding.</param>
         private static void CompareTextSequences(string text1, string text2, int numColumns, int numCellsPerColumn)
         {
             SDRStorage sdrStorage = new SDRStorage();
@@ -217,8 +222,11 @@ namespace NeoCortexApiSample
             // Calculate cosine similarity
             if (binarySDR1.Count > 0 && binarySDR2.Count > 0)
             {
-                double similarity = CosineSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray());
-                Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {similarity}");
+                double Cos_similarity = CosineSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray());
+                Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {Cos_similarity}");
+
+                double Euclid_similarity = EuclideanSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray());
+                Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {Euclid_similarity}");
             }
             else
             {
@@ -259,7 +267,34 @@ namespace NeoCortexApiSample
             return (magnitude1 == 0 || magnitude2 == 0) ? 0.0 : dotProduct / (magnitude1 * magnitude2);
         }
 
+        /// <summary>
+        /// Computes the Euclidean similarity between two numerical vectors.
+        /// The similarity is derived from the Euclidean distance, where a smaller distance 
+        /// results in a higher similarity score.
+        /// </summary>
+        /// <param name="vector1">The first numerical vector.</param>
+        /// <param name="vector2">The second numerical vector.</param>
+        /// <returns>
+        /// A similarity score ranging from 0 to 1, where 1 indicates identical vectors 
+        /// and lower values indicate greater dissimilarity.
+        /// </returns>
+        public static double EuclideanSimilarity(int[] vector1, int[] vector2)
+        {
+            double sumSquaredDifferences = 0;
 
+            // Ensure both vectors have the same length
+            int minLength = Math.Min(vector1.Length, vector2.Length);
+            for (int i = 0; i < minLength; i++)
+            {
+                sumSquaredDifferences += Math.Pow(vector1[i] - vector2[i], 2);
+            }
+
+            // Compute Euclidean distance
+            double euclideanDistance = Math.Sqrt(sumSquaredDifferences);
+
+            // Convert distance to similarity (higher value means more similar)
+            return 1 / (1 + euclideanDistance);
+        }
         private static void PredictNextElement(Predictor predictor, double[] list)
         {
             Debug.WriteLine("------------------------------");

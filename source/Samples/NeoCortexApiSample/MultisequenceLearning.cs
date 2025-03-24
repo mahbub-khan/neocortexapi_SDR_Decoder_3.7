@@ -1,14 +1,13 @@
-﻿using NeoCortexApi;
+﻿
+using NeoCortexApi;
 using NeoCortexApi.Classifiers;
 using NeoCortexApi.Encoders;
 using NeoCortexApi.Entities;
 using NeoCortexApi.Network;
 using Org.BouncyCastle.Asn1.Tsp;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 
 
@@ -57,9 +56,8 @@ namespace NeoCortexApiSample
                 PredictedSegmentDecrement = 0.1
             };
 
-            //double max = 1303;
-            double max = sequences.Values.SelectMany(list => list).Max(); //BERT's vocab size is 30,522
-            Console.WriteLine($"max value : {max}");
+            double max = 255;
+
             Dictionary<string, object> settings = new Dictionary<string, object>()
             {
                 { "W", 15},
@@ -131,14 +129,13 @@ namespace NeoCortexApiSample
 
             //double[] inputs = inputValues.ToArray();
             int[] prevActiveCols = new int[0];
-            
+
             int cycle = 0;
             int matches = 0;
 
-            var lastPredictedValues = new List<string>(new string[] { "0"});
+            var lastPredictedValues = new List<string>(new string[] { "0" });
 
-            //int maxCycles = 3000;
-            int maxCycles = 2000;
+            int maxCycles = 3500;
 
             //
             // Training SP to get stable. New-born stage.
@@ -157,7 +154,7 @@ namespace NeoCortexApiSample
                     foreach (var input in inputs.Value)
                     {
                         Debug.WriteLine($" -- {inputs.Key} - {input} --");
-                    
+
                         var lyrOut = layer1.Compute(input, true);
 
                         if (isInStableState)
@@ -177,7 +174,6 @@ namespace NeoCortexApiSample
 
             //
             // Loop over all sequences.
-            SDRStorage sdrStorage = new SDRStorage();
             foreach (var sequenceKeyPair in sequences)
             {
                 Debug.WriteLine($"-------------- Sequences {sequenceKeyPair.Key} ---------------");
@@ -211,7 +207,7 @@ namespace NeoCortexApiSample
                         var lyrOut = layer1.Compute(input, true) as ComputeCycle;
 
                         var activeColumns = layer1.GetResult("sp") as int[];
-                        
+
                         previousInputs.Add(input.ToString());
                         if (previousInputs.Count > (maxPrevInputs + 1))
                             previousInputs.RemoveAt(0);
@@ -239,12 +235,8 @@ namespace NeoCortexApiSample
 
                         cls.Learn(key, actCells.ToArray());
 
-                        int[] cellSDR = actCells.Select(c => c.Index).ToArray();
                         Debug.WriteLine($"Col  SDR: {Helpers.StringifyVector(lyrOut.ActivColumnIndicies)}");
                         Debug.WriteLine($"Cell SDR: {Helpers.StringifyVector(actCells.Select(c => c.Index).ToArray())}");
-
-                        // Save the SDR for this token/input
-                        sdrStorage.SaveSDR(input.ToString(), activeColumns, cellSDR);
 
                         //
                         // If the list of predicted values from the previous step contains the currently presenting value,
@@ -252,10 +244,10 @@ namespace NeoCortexApiSample
                         if (lastPredictedValues.Contains(key))
                         {
                             matches++;
-                            //Debug.WriteLine($"Match. Actual value: {key} - Predicted value: {lastPredictedValues.FirstOrDefault(key)}.");
+                            Debug.WriteLine($"Match. Actual value: {key} - Predicted value: {lastPredictedValues.FirstOrDefault(key)}.");
                         }
                         else
-                            //Debug.WriteLine($"Missmatch! Actual value: {key} - Predicted values: {String.Join(',', lastPredictedValues)}");
+                            Debug.WriteLine($"Missmatch! Actual value: {key} - Predicted values: {String.Join(',', lastPredictedValues)}");
 
                         if (lyrOut.PredictiveCells.Count > 0)
                         {
@@ -264,15 +256,15 @@ namespace NeoCortexApiSample
 
                             foreach (var item in predictedInputValues)
                             {
-                                //Debug.WriteLine($"Current Input: {input} \t| Predicted Input: {item.PredictedInput} - {item.Similarity}");
+                                Debug.WriteLine($"Current Input: {input} \t| Predicted Input: {item.PredictedInput} - {item.Similarity}");
                             }
 
-                            lastPredictedValues = predictedInputValues.Select(v=>v.PredictedInput).ToList();
+                            lastPredictedValues = predictedInputValues.Select(v => v.PredictedInput).ToList();
                         }
                         else
                         {
-                            //Debug.WriteLine($"NO CELLS PREDICTED for next cycle.");
-                            lastPredictedValues = new List<string> ();
+                            Debug.WriteLine($"NO CELLS PREDICTED for next cycle.");
+                            lastPredictedValues = new List<string>();
                         }
                     }
 
@@ -281,9 +273,7 @@ namespace NeoCortexApiSample
 
                     double accuracy = (double)matches / (double)sequenceKeyPair.Value.Count * 100.0;
 
-                    //Debug.WriteLine($"Cycle: {cycle}\tMatches={matches} of {sequenceKeyPair.Value.Count}\t {accuracy}%");
-
-                    //Debug.WriteLine($"Loop: {i}\tCycle: {cycle}\tMatches={matches} of {sequenceKeyPair.Value.Count}\t {accuracy}%");
+                    Debug.WriteLine($"Cycle: {cycle}\tMatches={matches} of {sequenceKeyPair.Value.Count}\t {accuracy}%");
 
                     if (accuracy >= maxPossibleAccuraccy)
                     {
@@ -318,6 +308,7 @@ namespace NeoCortexApiSample
 
             return new Predictor(layer1, mem, cls);
         }
+
 
         /// <summary>
         /// Gets the number of all unique inputs.

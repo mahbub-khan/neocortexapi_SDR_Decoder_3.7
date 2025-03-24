@@ -85,6 +85,7 @@ namespace NeoCortexApiSample
 
             TemporalMemory tm = new TemporalMemory();
             var numUniqueInputs = GetNumberOfInputs(sequences);
+
             // Initialize Spatial Pooler with homeostatic plasticity controller
             HomeostaticPlasticityController hpc = new HomeostaticPlasticityController(mem, numUniqueInputs * 150,
                 (isStable, numPatterns, actColAvg, seenInputs) =>
