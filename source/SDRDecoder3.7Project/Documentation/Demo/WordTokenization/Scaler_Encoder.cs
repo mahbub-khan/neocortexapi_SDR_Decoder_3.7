@@ -22,7 +22,7 @@ namespace WordTokenization
             int inputBits = 100;
             int numColumns = 1024;
 
-            double max = 14000;
+            double max = 125000;
 
             Dictionary<string, object> settings = new Dictionary<string, object>()
             {
@@ -46,9 +46,9 @@ namespace WordTokenization
             {
                 int[] result = encoder.Encode(input);
 
-                Console.WriteLine($"Input = {input}");
+                Console.WriteLine($"\nToken ID = {input}");
                 Console.WriteLine($"SDRs Generated = {NeoCortexApi.Helpers.StringifyVector(result)}");
-                Console.WriteLine($"SDR As Text = {NeoCortexApi.Helpers.StringifyVector(ArrayUtils.IndexWhere(result, k => k == 1))}");
+                Console.WriteLine($"SDR Positions = {NeoCortexApi.Helpers.StringifyVector(ArrayUtils.IndexWhere(result, k => k == 1))}");
 
                 //saving the SDR values
                 string sdrGenerated = NeoCortexApi.Helpers.StringifyVector(result);
