@@ -89,38 +89,34 @@ class Program
 
                 //Retrieve SDRs from the stored data
                 Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
+              
                 Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
 
-                // Merge all SDRs into single binary vectors
-                int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr =>
-                 sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
-               ).Distinct().ToArray();
+        // Merge all SDRs into single binary vectors
+        int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr => sdr).ToArray();
+        int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr => sdr).ToArray();
 
-                int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr =>
-                  sdr.Select((value, index) => value == 1 ? index : -1).Where(index => index != -1)
-                ).Distinct().ToArray();
-
-                // Debug SDRs before calculating similarity
-                DebugSDRs(sdrVector1, sdrVector2);
+        // Debug SDRs before calculating similarity
+        DebugSDRs(sdrVector1, sdrVector2);
 
                 // Compute Cosine Similarity between two SDR vectors
-                double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2);
-                double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2);
+                double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2)*100;
+                double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2)*100;
 
                 // Display the result
-                Console.WriteLine($"\nCosine Similarity: {Cos_similarity:0.00} \nEuclidean Similarity: {Euclid_similarity:0.00}");
+                Console.WriteLine($"\nSimilarity using Cosine Similarity function: {Cos_similarity:F2}% \nSimilarity using Euclidean Distance function: {Euclid_similarity:F2}%");
 
     }
 
 
     public static void DebugSDRs(int[] mergedSDR1, int[] mergedSDR2)
     {
-        Console.WriteLine("\nSparse Merged SDR of subsequenceText : " + string.Join(", ", mergedSDR1));
-        Console.WriteLine("Sparse Merged SDR of comparisonText: " + string.Join(", ", mergedSDR2));
-        Console.WriteLine("Common SDRs: " + string.Join(", ", mergedSDR1.Intersect(mergedSDR2)));
-        Console.WriteLine("Total Active Bits in subsequenceText SDR: " + mergedSDR1.Length);
-        Console.WriteLine("Total Active Bits in comparisonText: " + mergedSDR2.Length);
-        Console.WriteLine("Common Active Bits: " + mergedSDR1.Intersect(mergedSDR2).Count());
+        //Console.WriteLine("\nSparse Merged SDR of subsequenceText : " + string.Join(", ", mergedSDR1));
+        //Console.WriteLine("Sparse Merged SDR of comparisonText: " + string.Join(", ", mergedSDR2));
+        //Console.WriteLine("Common SDRs: " + string.Join(", ", mergedSDR1.Intersect(mergedSDR2)));
+        //Console.WriteLine("Total Active Bits in subsequenceText SDR: " + mergedSDR1.Length);
+        //Console.WriteLine("Total Active Bits in comparisonText: " + mergedSDR2.Length);
+        //Console.WriteLine("Common Active Bits: " + mergedSDR1.Intersect(mergedSDR2).Count());
 
     }
 }
