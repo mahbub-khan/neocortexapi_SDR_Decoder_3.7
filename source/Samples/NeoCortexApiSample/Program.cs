@@ -128,15 +128,17 @@ namespace NeoCortexApiSample
 
             SemanticSimilarityLearning experiment = new SemanticSimilarityLearning();
             experiment.Run(sequences);
+            //loop added for taking multiple subsequences for comparison
+            while (true)
+            {
+                Console.WriteLine("Enter first subsequence from sourceText: ");
+                string input1 = Console.ReadLine();
 
-            Console.WriteLine("Enter first text sequence: ");
-            string input1 = Console.ReadLine();
+                Console.WriteLine("Enter second subsequence for comparison: ");
+                string input2 = Console.ReadLine();
 
-            Console.WriteLine("Enter second text sequence: ");
-            string input2 = Console.ReadLine();
-
-            CompareTextSequences(input1, input2, 1024,25);
-
+                CompareTextSequences(input1, input2, 1024, 25);
+            }
 
             //
             // These list are used to see how the prediction works.
@@ -222,10 +224,10 @@ namespace NeoCortexApiSample
             // Calculate cosine similarity
             if (binarySDR1.Count > 0 && binarySDR2.Count > 0)
             {
-                double Cos_similarity = CosineSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray());
+                double Cos_similarity = CosineSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray())*100;
                 Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {Cos_similarity:F2}%");
 
-                double Euclid_similarity = EuclideanSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray());
+                double Euclid_similarity = EuclideanSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray())*100;
                 Console.WriteLine($"Euclidean Similarity between '{text1}' and '{text2}': {Euclid_similarity:F2}%");
             }
             else
