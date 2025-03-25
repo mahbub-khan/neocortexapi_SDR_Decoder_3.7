@@ -223,10 +223,10 @@ namespace NeoCortexApiSample
             if (binarySDR1.Count > 0 && binarySDR2.Count > 0)
             {
                 double Cos_similarity = CosineSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray());
-                Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {Cos_similarity}");
+                Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {Cos_similarity:F2}%");
 
                 double Euclid_similarity = EuclideanSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray());
-                Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {Euclid_similarity}");
+                Console.WriteLine($"Euclidean Similarity between '{text1}' and '{text2}': {Euclid_similarity:F2}%");
             }
             else
             {

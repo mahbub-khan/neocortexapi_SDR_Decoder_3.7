@@ -58,17 +58,6 @@ class Program
                 var list1 = processedText1.Select(i => (double)i).ToList();
 
 
-
-
-
-                //// Retrieve SDRs for the given token IDs
-                //Dictionary<double, string> retrievedSDRs = sdrretrieval.GetSDRs(list1);
-                ////Display retrieved SDRs
-                //foreach (var kvp in retrievedSDRs)
-                //{
-                //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: {kvp.Value}");
-                //}
-
                 // Prompt the user for another input
                 Console.WriteLine("\nEnter text for comaprison: ");
                 string userInput2 = Console.ReadLine(); // Take runtime input from the user
@@ -79,14 +68,6 @@ class Program
                 // Convert to a list of doubles
                 var list2 = processedText2.Select(i => (double)i).ToList();
 
-                ////Retrieve SDRs for the given token IDs
-                //Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRs(list2);
-                //// Display retrieved SDRs
-                //foreach (var kvp in retrievedSDRs2)
-                //{
-                //    Console.WriteLine($"Token ID: {kvp.Key} -> SDR: [{string.Join(", ", kvp.Value)}]");
-                //}
-
                 //Retrieve SDRs from the stored data
                 Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
               
@@ -96,29 +77,17 @@ class Program
         int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr => sdr).ToArray();
         int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr => sdr).ToArray();
 
-        // Debug SDRs before calculating similarity
-        DebugSDRs(sdrVector1, sdrVector2);
+        // Compute Cosine Similarity between two SDR vectors
+        double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2)*100;
+        double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2)*100;
 
-                // Compute Cosine Similarity between two SDR vectors
-                double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2)*100;
-                double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2)*100;
-
-                // Display the result
-                Console.WriteLine($"\nSimilarity using Cosine Similarity function: {Cos_similarity:F2}% \nSimilarity using Euclidean Distance function: {Euclid_similarity:F2}%");
+         // Display the result
+         Console.WriteLine($"\nSimilarity using Cosine Similarity function: {Cos_similarity:F2}% \nSimilarity using Euclidean Distance function: {Euclid_similarity:F2}%");
 
     }
 
 
-    public static void DebugSDRs(int[] mergedSDR1, int[] mergedSDR2)
-    {
-        //Console.WriteLine("\nSparse Merged SDR of subsequenceText : " + string.Join(", ", mergedSDR1));
-        //Console.WriteLine("Sparse Merged SDR of comparisonText: " + string.Join(", ", mergedSDR2));
-        //Console.WriteLine("Common SDRs: " + string.Join(", ", mergedSDR1.Intersect(mergedSDR2)));
-        //Console.WriteLine("Total Active Bits in subsequenceText SDR: " + mergedSDR1.Length);
-        //Console.WriteLine("Total Active Bits in comparisonText: " + mergedSDR2.Length);
-        //Console.WriteLine("Common Active Bits: " + mergedSDR1.Intersect(mergedSDR2).Count());
 
-    }
 }
 
 

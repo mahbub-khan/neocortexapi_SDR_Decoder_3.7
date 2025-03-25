@@ -14,20 +14,6 @@ namespace WordTokenization
         /// <param name="vec1">First SDR vector.</param>
         /// <param name="vec2">Second SDR vector.</param>
         /// <returns>Similarity score between 0 and 1.</returns>
-
-        //public static double CosineSimilarity(int[] vec1, int[] vec2)
-        //{
-        //    HashSet<int> set1 = new HashSet<int>(vec1);
-        //    HashSet<int> set2 = new HashSet<int>(vec2);
-
-        //    int intersection = set1.Intersect(set2).Count();
-        //    double magnitude1 = Math.Sqrt(set1.Count);
-        //    double magnitude2 = Math.Sqrt(set2.Count);
-
-        //    if (magnitude1 == 0 || magnitude2 == 0) return 0.0;
-        //    return intersection / (magnitude1 * magnitude2);
-        //}
-
         public static double CosineSimilarity(int[] vec1, int[] vec2)
         {
             int dotProduct = 0; // Stores sum of element-wise multiplication
@@ -49,23 +35,7 @@ namespace WordTokenization
             // Avoid division by zero
             return (magnitude1 == 0 || magnitude2 == 0) ? 0 : (dotProduct / (magnitude1 * magnitude2));
         }
-        //public static double EuclideanSimilarity(int[] vec1, int[] vec2)
-        //    {
-        //        double sumSquaredDifferences = 0;
-
-        //        // Ensure both vectors have the same length
-        //        int minLength = Math.Min(vec1.Length, vec2.Length);
-        //        for (int i = 0; i < minLength; i++)
-        //        {
-        //            sumSquaredDifferences += Math.Pow(vec1[i] - vec2[i], 2);
-        //        }
-
-        //        // Compute Euclidean distance
-        //        double euclideanDistance = Math.Sqrt(sumSquaredDifferences);
-
-        //        // Convert distance to similarity (higher value means more similar)
-        //        return 1 / (1 + euclideanDistance); 
-        //}
+       
         public static double EuclideanSimilarity(int[] vec1, int[] vec2)
         {
             // Find the maximum length
