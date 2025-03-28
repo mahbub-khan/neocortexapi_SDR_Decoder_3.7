@@ -1,1 +1,0 @@
-Amina: Going through the documentation of Embedding Vectors and trying to get some idea about it.

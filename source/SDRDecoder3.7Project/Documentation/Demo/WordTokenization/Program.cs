@@ -46,32 +46,32 @@ class Program
         // Initialize SDR handler (loads SDRs from file)
         SDRRetrieval sdrretrieval = new("sdr_output.txt");
 
-        
-                // Prompt the user for input
-                Console.WriteLine("\nEnter a sub-sequence of the source text: ");
-                string userInput1 = Console.ReadLine(); // Take runtime input from the user
 
-                // Pass the input to a method for processing
-                List<int> processedText1 = list_Generation.TokenizeText(userInput1);
+        // Prompt the user for input
+        Console.WriteLine("\nEnter a sub-sequence of the source text: ");
+        string userInput1 = Console.ReadLine(); // Take runtime input from the user
 
-                // Convert to a list of doubles
-                var list1 = processedText1.Select(i => (double)i).ToList();
+        // Pass the input to a method for processing
+        List<int> processedText1 = list_Generation.TokenizeText(userInput1);
+
+        // Convert to a list of doubles
+        var list1 = processedText1.Select(i => (double)i).ToList();
 
 
-                // Prompt the user for another input
-                Console.WriteLine("\nEnter text for comaprison: ");
-                string userInput2 = Console.ReadLine(); // Take runtime input from the user
+        // Prompt the user for another input
+        Console.WriteLine("\nEnter text for comaprison: ");
+        string userInput2 = Console.ReadLine(); // Take runtime input from the user
 
-                // Pass the input to a method for processing
-                List<int> processedText2 = list_Generation.TokenizeText(userInput2);
+        // Pass the input to a method for processing
+        List<int> processedText2 = list_Generation.TokenizeText(userInput2);
 
-                // Convert to a list of doubles
-                var list2 = processedText2.Select(i => (double)i).ToList();
+        // Convert to a list of doubles
+        var list2 = processedText2.Select(i => (double)i).ToList();
 
-                //Retrieve SDRs from the stored data
-                Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
+        //Retrieve SDRs from the stored data
+        Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
               
-                Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
+        Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
 
         // Merge all SDRs into single binary vectors
         int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr => sdr).ToArray();
@@ -85,8 +85,6 @@ class Program
          Console.WriteLine($"\nSimilarity using Cosine Similarity function: {Cos_similarity:F2}% \nSimilarity using Euclidean Distance function: {Euclid_similarity:F2}%");
 
     }
-
-
 
 }
 
