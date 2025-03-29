@@ -48,7 +48,6 @@ namespace NeoCortexApiSample
 
             // Find the maximum value in the sequences
             double max = sequences.Values.SelectMany(list => list).Max();
-            Console.WriteLine($"Max value: {max}");
 
             // Configure the scalar encoder
             Dictionary<string, object> settings = new Dictionary<string, object>()
@@ -95,7 +94,7 @@ namespace NeoCortexApiSample
                         Debug.WriteLine($"STABLE: Patterns: {numPatterns}, Inputs: {seenInputs}, iteration: {seenInputs / numPatterns}");
 
                     isInStableState = isStable;
-                }, numOfCyclesToWaitOnChange: 50);
+                }, numOfCyclesToWaitOnChange: 5);
 
             SpatialPoolerMT sp = new SpatialPoolerMT(hpc);
             sp.Init(mem);
@@ -104,7 +103,6 @@ namespace NeoCortexApiSample
             // Add encoder and spatial pooler to the layer
             layer1.HtmModules.Add("encoder", encoder);
             layer1.HtmModules.Add("sp", sp);
-            //layer1.HtmModules.Add("tm", tm);
 
             // Dictionary to store SDRs for each input
             SDRStorage sdrStorage = new SDRStorage();
@@ -112,7 +110,7 @@ namespace NeoCortexApiSample
             //
             // Training SP to get stable. New-born stage.
             //
-            int maxCycles = 10;
+            int maxCycles = 20;
             int cycle = 0;
             for (int i = 0; i < maxCycles && isInStableState == false; i++)
             {

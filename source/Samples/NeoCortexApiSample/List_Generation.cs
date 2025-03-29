@@ -40,10 +40,9 @@ namespace NeoCortexApiSample
 
 
             // Display results
-            Console.WriteLine("Input Text: " + inputText);
-            Console.WriteLine("Tokens: " + tokens);
-            Console.WriteLine("Token IDs: " + tokenIds);
-            //Console.WriteLine("Output:" +output);
+            Console.WriteLine("\nInput Text: " + inputText);
+            Console.WriteLine("\nTokens: " + tokens);
+            Console.WriteLine("\nToken IDs: " + tokenIds);
 
             // Convert tokenized string output into List<int>
 

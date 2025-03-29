@@ -91,9 +91,23 @@ namespace NeoCortexApiSample
             Dictionary<string, List<double>> sequences = new Dictionary<string, List<double>>();
             sequences.Add("S1", new List<double>(doubleList));
 
+            //Prototype for learning sequence
+            SemanticSimilarityLearning experiment = new SemanticSimilarityLearning();
+            experiment.Run(sequences);
+            //loop added for taking multiple subsequences for comparison
+            while (true)
+            {
+                Console.WriteLine("Enter first subsequence from sourceText: ");
+                string input1 = Console.ReadLine();
 
-           // sequences.Add("S1", new List<double>(new double[] { 1.0, 2.0, 3.0, 4.0 }));
-           // sequences.Add("S2", new List<double>(new double[] { 5.0, 6.0, 7.0, 8.0 }));
+                Console.WriteLine("Enter second subsequence for comparison: ");
+                string input2 = Console.ReadLine();
+
+                CompareTextSequences(input1, input2, 1024, 25);
+            }
+
+            // sequences.Add("S1", new List<double>(new double[] { 1.0, 2.0, 3.0, 4.0 }));
+            // sequences.Add("S2", new List<double>(new double[] { 5.0, 6.0, 7.0, 8.0 }));
 
             //sequences.Add("S1", new List<double>(new double[] { 0.0, 1.0, 0.0, 2.0, 3.0, 4.0, 5.0, 6.0, 5.0, 4.0, 3.0, 7.0, 1.0, 9.0, 12.0, 11.0, 12.0, 13.0, 14.0, 11.0, 12.0, 14.0, 5.0, 7.0, 6.0, 9.0, 3.0, 4.0, 3.0, 4.0, 3.0, 4.0 }));
             //sequences.Add("S2", new List<double>(new double[] { 0.8, 2.0, 0.0, 3.0, 3.0, 4.0, 5.0, 6.0, 5.0, 7.0, 2.0, 7.0, 1.0, 9.0, 11.0, 11.0, 10.0, 13.0, 14.0, 11.0, 7.0, 6.0, 5.0, 7.0, 6.0, 5.0, 3.0, 2.0, 3.0, 4.0, 3.0, 4.0 }));
@@ -125,20 +139,6 @@ namespace NeoCortexApiSample
             // Prototype for building the prediction engine.
             //MultiSequenceLearning experiment = new MultiSequenceLearning();
             //var predictor = experiment.Run(sequences);
-
-            SemanticSimilarityLearning experiment = new SemanticSimilarityLearning();
-            experiment.Run(sequences);
-            //loop added for taking multiple subsequences for comparison
-            while (true)
-            {
-                Console.WriteLine("Enter first subsequence from sourceText: ");
-                string input1 = Console.ReadLine();
-
-                Console.WriteLine("Enter second subsequence for comparison: ");
-                string input2 = Console.ReadLine();
-
-                CompareTextSequences(input1, input2, 1024, 25);
-            }
 
             //
             // These list are used to see how the prediction works.
@@ -204,6 +204,11 @@ namespace NeoCortexApiSample
                     int[] cellBinary = ConvertToBinarySDR(storedSDR.Value.cellSDR, numColumns * numCellsPerColumn);
                     binarySDR1.AddRange(cellBinary);
                 }
+                else
+                {
+                    Console.WriteLine($"SDR not found for token{token.ToString()}");
+                    break;
+                }
             }
 
             foreach (var token in tokens2)
@@ -219,20 +224,24 @@ namespace NeoCortexApiSample
                     int[] cellBinary = ConvertToBinarySDR(storedSDR.Value.cellSDR, numColumns * numCellsPerColumn);
                     binarySDR2.AddRange(cellBinary);
                 }
+                else { 
+                    Console.WriteLine($"SDR not found for token{token.ToString()}"); 
+                    break;
+                }
             }
 
             // Calculate cosine similarity
             if (binarySDR1.Count > 0 && binarySDR2.Count > 0)
             {
                 double Cos_similarity = CosineSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray())*100;
-                Console.WriteLine($"Cosine Similarity between '{text1}' and '{text2}': {Cos_similarity:F2}%");
+                Console.WriteLine($"\nCosine Similarity between '{text1}' and '{text2}': {Cos_similarity:F2}%");
 
                 double Euclid_similarity = EuclideanSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray())*100;
-                Console.WriteLine($"Euclidean Similarity between '{text1}' and '{text2}': {Euclid_similarity:F2}%");
+                Console.WriteLine($"\nEuclidean Similarity between '{text1}' and '{text2}': {Euclid_similarity:F2}%");
             }
             else
             {
-                Console.WriteLine("No matching SDRs found for comparison.");
+                Console.WriteLine("\nNo matching SDRs found for comparison.");
             }
         }
 

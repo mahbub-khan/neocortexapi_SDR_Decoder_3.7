@@ -22,7 +22,8 @@ namespace WordTokenization
             int inputBits = 100;
             int numColumns = 1024;
 
-            double max = 125000;
+            // Find the maximum value in the sequences
+            double max = sequences.Values.SelectMany(list => list).Max();
 
             Dictionary<string, object> settings = new Dictionary<string, object>()
             {
@@ -61,9 +62,9 @@ namespace WordTokenization
 
                 Console.WriteLine($"SDR saved to {filePath}");
 
-                int[,] twoDimenArray = ArrayUtils.Make2DArray<int>(result, (int)Math.Sqrt(result.Length), (int)Math.Sqrt(result.Length));
-                int[,] twoDimArray = ArrayUtils.Transpose(twoDimenArray);
-                NeoCortexUtils.DrawBitmap(twoDimArray, 1024, 1024, $"{outFolder}\\{input}.png", Color.PaleGreen, Color.Blue, text: input.ToString());
+                //int[,] twoDimenArray = ArrayUtils.Make2DArray<int>(result, (int)Math.Sqrt(result.Length), (int)Math.Sqrt(result.Length));
+                //int[,] twoDimArray = ArrayUtils.Transpose(twoDimenArray);
+                //NeoCortexUtils.DrawBitmap(twoDimArray, 1024, 1024, $"{outFolder}\\{input}.png", Color.PaleGreen, Color.Blue, text: input.ToString());
 
                 if (!sdrs.ContainsKey(input))
                 {
