@@ -494,7 +494,7 @@ for a better understanding.
 
 **Using HTM SDRs: **
 **Figure Similarity Output of Subsequences**
-![Figure Similarity Output of Subsequences](https://github.com/mahbub-khan/neocortexapi_SDR_Decoder_3.7/blob/master/source/SDRDecoder3.7Project/Documentation/R5-Similarity%20Output%20of%20Subsequences.png)
+![Figure Similarity Output of Subsequences](https://github.com/mahbub-khan/neocortexapi_SDR_Decoder_3.7/blob/master/source/SDRDecoder3.7Project/Documentation/R5-Similarity%20Output%20of%20Subsequences.JPG)
 
 Below is a table displaying the similarity scores for each pair of subsequences using both Cosine Similarity and Euclidean Similarity.
 
