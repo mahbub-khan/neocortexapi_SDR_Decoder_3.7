@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WordTokenization
 {
-    class List_Generation
+    class ListGeneration
     {
         List<int> result = new List<int>();
         public List<int> TokenizeText(string inputText)

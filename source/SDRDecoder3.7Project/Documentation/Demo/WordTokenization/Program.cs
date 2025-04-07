@@ -22,10 +22,10 @@ class Program
 
         // Read the text file
         string text = File.ReadAllText(textInput);
-        List_Generation list_Generation = new List_Generation();
+        ListGeneration listGeneration = new ListGeneration();
 
         // tokenId generation
-        List<int> tokenIds = list_Generation.TokenizeText(text);
+        List<int> tokenIds = listGeneration.TokenizeText(text);
 
         // Convert to a list of doubles
         List<double> doubleList = tokenIds.Select(i => (double)i).ToList();
@@ -40,7 +40,7 @@ class Program
 
 
         //visualizing SDRs
-        Scaler_Encoder encoder = new Scaler_Encoder();
+        ScalerEncoder encoder = new ScalerEncoder();
         encoder.ScalarEncoderTest(sequences);
 
         // Initialize SDR handler (loads SDRs from file)
@@ -52,7 +52,7 @@ class Program
         string userInput1 = Console.ReadLine(); // Take runtime input from the user
 
         // Pass the input to a method for processing
-        List<int> processedText1 = list_Generation.TokenizeText(userInput1);
+        List<int> processedText1 = listGeneration.TokenizeText(userInput1);
 
         // Convert to a list of doubles
         var list1 = processedText1.Select(i => (double)i).ToList();
@@ -63,7 +63,7 @@ class Program
         string userInput2 = Console.ReadLine(); // Take runtime input from the user
 
         // Pass the input to a method for processing
-        List<int> processedText2 = list_Generation.TokenizeText(userInput2);
+        List<int> processedText2 = listGeneration.TokenizeText(userInput2);
 
         // Convert to a list of doubles
         var list2 = processedText2.Select(i => (double)i).ToList();
@@ -78,11 +78,11 @@ class Program
         int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr => sdr).ToArray();
 
         // Compute Cosine Similarity between two SDR vectors
-        double Cos_similarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2)*100;
-        double Euclid_similarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2)*100;
+        double cosineSimilarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2)*100;
+        double euclidSimilarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2)*100;
 
          // Display the result
-         Console.WriteLine($"\nSimilarity using Cosine Similarity function: {Cos_similarity:F2}% \nSimilarity using Euclidean Distance function: {Euclid_similarity:F2}%");
+         Console.WriteLine($"\nSimilarity using Cosine Similarity function: {cosineSimilarity:F2}% \nSimilarity using Euclidean Distance function: {euclidSimilarity:F2}%");
 
     }
 

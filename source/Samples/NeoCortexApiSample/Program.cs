@@ -79,7 +79,7 @@ namespace NeoCortexApiSample
 
             // Read the text file
             string text = File.ReadAllText(textInput);
-            List_Generation list_Generation = new List_Generation();
+            ListGeneration list_Generation = new ListGeneration();
 
             // tokenId generation
             List<int> tokenIds = list_Generation.TokenizeText(text);
@@ -180,7 +180,7 @@ namespace NeoCortexApiSample
         private static void CompareTextSequences(string text1, string text2, int numColumns, int numCellsPerColumn)
         {
             SDRStorage sdrStorage = new SDRStorage();
-            List_Generation listGeneration = new List_Generation();
+            ListGeneration listGeneration = new ListGeneration();
 
             // Tokenize both text sequences
             List<int> tokens1 = listGeneration.TokenizeText(text1);
@@ -197,11 +197,11 @@ namespace NeoCortexApiSample
                 if (storedSDR.HasValue)
                 {
                     // Convert column SDR to binary
-                    int[] columnBinary = ConvertToBinarySDR(storedSDR.Value.columnSDR, numColumns);
+                    int[] columnBinary = ConvertToDenseArray(storedSDR.Value.columnSDR, numColumns);
                     binarySDR1.AddRange(columnBinary);
 
                     // Convert cell SDR to binary
-                    int[] cellBinary = ConvertToBinarySDR(storedSDR.Value.cellSDR, numColumns * numCellsPerColumn);
+                    int[] cellBinary = ConvertToDenseArray(storedSDR.Value.cellSDR, numColumns * numCellsPerColumn);
                     binarySDR1.AddRange(cellBinary);
                 }
                 else
@@ -217,11 +217,11 @@ namespace NeoCortexApiSample
                 if (storedSDR.HasValue)
                 {
                     // Convert column SDR to binary
-                    int[] columnBinary = ConvertToBinarySDR(storedSDR.Value.columnSDR, numColumns);
+                    int[] columnBinary = ConvertToDenseArray(storedSDR.Value.columnSDR, numColumns);
                     binarySDR2.AddRange(columnBinary);
 
                     // Convert cell SDR to binary
-                    int[] cellBinary = ConvertToBinarySDR(storedSDR.Value.cellSDR, numColumns * numCellsPerColumn);
+                    int[] cellBinary = ConvertToDenseArray(storedSDR.Value.cellSDR, numColumns * numCellsPerColumn);
                     binarySDR2.AddRange(cellBinary);
                 }
                 else { 
@@ -246,23 +246,23 @@ namespace NeoCortexApiSample
         }
 
         /// <summary>
-        /// Converts a list of active indices into a binary SDR vector.
+        /// Converts a list of active indices into a binary SDR vector. Which is called Dense Array
         /// </summary>
         /// <param name="activeIndices">List of active indices (e.g., [10, 12, 25]).</param>
         /// <param name="totalSize">Total size of the binary vector (e.g., number of columns or cells).</param>
         /// <returns>A binary vector with 1s at active indices and 0s elsewhere.</returns>
-        private static int[] ConvertToBinarySDR(int[] activeIndices, int totalSize)
+        private static int[] ConvertToDenseArray(int[] activeIndices, int totalSize)
         {
-            int[] binarySDR = new int[totalSize];
-            foreach (int index in activeIndices)
+            var binarySDR = new int[totalSize];
+
+            foreach (var index in activeIndices.Where(i => i >= 0 && i < totalSize))
             {
-                if (index < totalSize)
-                {
-                    binarySDR[index] = 1;
-                }
+                binarySDR[index] = 1;
             }
+
             return binarySDR;
         }
+
 
         /// <summary>
         /// Calculates the cosine similarity between two binary SDR vectors.

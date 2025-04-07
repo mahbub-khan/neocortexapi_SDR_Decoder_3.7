@@ -10,7 +10,7 @@ namespace NeoCortexApiSample
     /// <summary>
     /// Implements a method for converting text sequence into list.
     /// </summary>
-    internal class List_Generation
+    internal class ListGeneration
     {
         /// <summary>
         /// Converts the text input into token and tokenIds and then saves the tokenIds as a list<int>.

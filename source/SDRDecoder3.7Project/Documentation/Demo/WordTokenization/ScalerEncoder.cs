@@ -13,7 +13,7 @@ using NeoCortex;
 
 namespace WordTokenization
 {
-    public class Scaler_Encoder
+    public class ScalerEncoder
     {
         public void ScalarEncoderTest(Dictionary<string, List<double>> sequences)
         {
