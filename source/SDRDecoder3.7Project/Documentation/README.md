@@ -26,7 +26,7 @@ Ensure you have the following installed on your system:
 - **`SemanticSimilarityLearning.cs`**: Text Sequence Learning
   [SemanticSimilarityLearning.cs](https://github.com/mahbub-khan/neocortexapi_SDR_Decoder_3.7/blob/master/source/Samples/NeoCortexApiSample/SemanticSimilarityLearning.cs)
 - **`ListGeneration.cs`**: Converting Text Sequence into List
-  [List_Generation.cs](https://github.com/mahbub-khan/neocortexapi_SDR_Decoder_3.7/blob/master/source/Samples/NeoCortexApiSample/ListGeneration.cs)
+  [ListGeneration.cs](https://github.com/mahbub-khan/neocortexapi_SDR_Decoder_3.7/blob/master/source/Samples/NeoCortexApiSample/ListGeneration.cs)
 - **`SDRStorage.cs`**: Converting Text Sequence into List
   [SDRStorage.cs](https://github.com/mahbub-khan/neocortexapi_SDR_Decoder_3.7/blob/master/source/Samples/NeoCortexApiSample/SDRStorage.cs)
 
