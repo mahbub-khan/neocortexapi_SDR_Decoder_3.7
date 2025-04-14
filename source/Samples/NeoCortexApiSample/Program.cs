@@ -79,10 +79,10 @@ namespace NeoCortexApiSample
 
             // Read the text file
             string text = File.ReadAllText(textInput);
-            ListGeneration list_Generation = new ListGeneration();
+            ListGeneration listGeneration = new ListGeneration();
 
             // tokenId generation
-            List<int> tokenIds = list_Generation.TokenizeText(text);
+            List<int> tokenIds = listGeneration.TokenizeText(text);
 
             // Convert to a list of doubles
             List<double> doubleList = tokenIds.Select(i => (double)i).ToList();
@@ -230,7 +230,7 @@ namespace NeoCortexApiSample
                 }
             }
 
-            // Calculate cosine similarity
+            // Calculate cosine and euclid similarity
             if (binarySDR1.Count > 0 && binarySDR2.Count > 0)
             {
                 double cosineSimilarity = CosineSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray())*100;
@@ -238,6 +238,9 @@ namespace NeoCortexApiSample
 
                 double euclidSimilarity = EuclideanSimilarity(binarySDR1.ToArray(), binarySDR2.ToArray())*100;
                 Console.WriteLine($"\nEuclidean Similarity between '{text1}' and '{text2}': {euclidSimilarity:F2}%");
+
+                // Add to visualizer
+                SequenceSimilarityVisualizer.AddComparison(text1, text2, cosineSimilarity, euclidSimilarity);
             }
             else
             {

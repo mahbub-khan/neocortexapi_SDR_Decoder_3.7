@@ -46,44 +46,49 @@ class Program
         // Initialize SDR handler (loads SDRs from file)
         SDRRetrieval sdrretrieval = new("sdr_output.txt");
 
+        while (true)
+        {
+            // Prompt the user for input
+            Console.WriteLine("\nEnter a sub-sequence of the source text: ");
+            string userInput1 = Console.ReadLine(); // Take runtime input from the user
 
-        // Prompt the user for input
-        Console.WriteLine("\nEnter a sub-sequence of the source text: ");
-        string userInput1 = Console.ReadLine(); // Take runtime input from the user
+            // Pass the input to a method for processing
+            List<int> processedText1 = listGeneration.TokenizeText(userInput1);
 
-        // Pass the input to a method for processing
-        List<int> processedText1 = listGeneration.TokenizeText(userInput1);
-
-        // Convert to a list of doubles
-        var list1 = processedText1.Select(i => (double)i).ToList();
+            // Convert to a list of doubles
+            var list1 = processedText1.Select(i => (double)i).ToList();
 
 
-        // Prompt the user for another input
-        Console.WriteLine("\nEnter text for comaprison: ");
-        string userInput2 = Console.ReadLine(); // Take runtime input from the user
+            // Prompt the user for another input
+            Console.WriteLine("\nEnter text for comaprison: ");
+            string userInput2 = Console.ReadLine(); // Take runtime input from the user
 
-        // Pass the input to a method for processing
-        List<int> processedText2 = listGeneration.TokenizeText(userInput2);
+            // Pass the input to a method for processing
+            List<int> processedText2 = listGeneration.TokenizeText(userInput2);
 
-        // Convert to a list of doubles
-        var list2 = processedText2.Select(i => (double)i).ToList();
+            // Convert to a list of doubles
+            var list2 = processedText2.Select(i => (double)i).ToList();
 
-        //Retrieve SDRs from the stored data
-        Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
-              
-        Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
+            //Retrieve SDRs from the stored data
+            Dictionary<double, int[]> retrievedSDRs1 = sdrretrieval.GetSDRsAsVectors(list1);
 
-        // Merge all SDRs into single binary vectors
-        int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr => sdr).ToArray();
-        int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr => sdr).ToArray();
+            Dictionary<double, int[]> retrievedSDRs2 = sdrretrieval.GetSDRsAsVectors(list2);
 
-        // Compute Cosine Similarity between two SDR vectors
-        double cosineSimilarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2)*100;
-        double euclidSimilarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2)*100;
+            // Merge all SDRs into single binary vectors
+            int[] sdrVector1 = retrievedSDRs1.Values.SelectMany(sdr => sdr).ToArray();
+            int[] sdrVector2 = retrievedSDRs2.Values.SelectMany(sdr => sdr).ToArray();
 
-         // Display the result
-         Console.WriteLine($"\nSimilarity using Cosine Similarity function: {cosineSimilarity:F2}% \nSimilarity using Euclidean Distance function: {euclidSimilarity:F2}%");
+            // Compute Cosine Similarity between two SDR vectors
+            double cosineSimilarity = SDRProcessor.CosineSimilarity(sdrVector1, sdrVector2) * 100;
+            double euclidSimilarity = SDRProcessor.EuclideanSimilarity(sdrVector1, sdrVector2) * 100;
 
+            // Display the result
+            Console.WriteLine($"\nCosine Similarity between '{userInput1}' and '{userInput2}': {cosineSimilarity:F2}%");
+            Console.WriteLine($"\nEuclidean Distance between '{userInput1}' and '{userInput2}': {euclidSimilarity:F2}%");
+
+            // Add to visualizer
+            SequenceSimilarityVisualizer.AddComparison(userInput1, userInput2, cosineSimilarity, euclidSimilarity);
+        }
     }
 
 }

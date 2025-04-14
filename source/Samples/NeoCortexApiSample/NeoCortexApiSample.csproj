@@ -17,6 +17,9 @@
     <Compile Remove="Program1.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="XPlot.Plotly" Version="4.1.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\NeoCortexApi\NeoCortexApi.csproj" />
     <ProjectReference Include="..\..\NeoCortexEntities\NeoCortexEntities.csproj" />
     <ProjectReference Include="..\..\NeoCortexUtils\NeoCortexUtils.csproj" />
